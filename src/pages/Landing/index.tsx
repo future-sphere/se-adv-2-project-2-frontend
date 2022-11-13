@@ -7,11 +7,11 @@ type Props = {};
 
 const LandingPage = (props: Props) => {
   return (
-    <Layout>
+    <>
       <HeroSection />
       <TrendingSection />
       <PerksSection />
-    </Layout>
+    </>
   );
 };
 

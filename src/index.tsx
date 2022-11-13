@@ -5,6 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
 import LandingPage from './pages/Landing';
+import Layout from './components/Layout';
+import ProductPage from './pages/Product';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -15,12 +17,12 @@ root.render(
       router={createBrowserRouter([
         {
           path: '/',
-          element: <LandingPage />,
+          element: <Layout />,
           errorElement: <h1>404</h1>,
           children: [
             {
               index: true,
-              element: <h1>Index</h1>,
+              element: <LandingPage />,
             },
           ],
         },
@@ -29,6 +31,17 @@ root.render(
           element: <h1>About</h1>,
           errorElement: <h1>404</h1>,
           children: [],
+        },
+        {
+          path: '/product',
+          element: <Layout />,
+          errorElement: <h1>404</h1>,
+          children: [
+            {
+              path: ':id',
+              element: <ProductPage />,
+            },
+          ],
         },
       ])}
     />
