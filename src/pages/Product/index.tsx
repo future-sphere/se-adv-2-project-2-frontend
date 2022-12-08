@@ -5,37 +5,12 @@ import {
 } from '@heroicons/react/24/outline';
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { classNames } from '../../components/Navbar';
+import { classNames, formatPrice } from '../../helpers';
 import { productPlaceholder } from '../../constants';
 import { Product } from '../../interfaces';
 import a from '../../services';
 
 type Props = {};
-
-const reviews = {
-  average: 4,
-  totalCount: 1624,
-  counts: [
-    { rating: 5, count: 1019 },
-    { rating: 4, count: 162 },
-    { rating: 3, count: 97 },
-    { rating: 2, count: 199 },
-    { rating: 1, count: 147 },
-  ],
-  featured: [
-    {
-      id: 1,
-      rating: 5,
-      content: `
-        <p>This is the bag of my dreams. I took it on my last vacation and was able to fit an absurd amount of snacks for the many long and hungry flights.</p>
-      `,
-      author: 'Emily Selman',
-      avatarSrc:
-        'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80',
-    },
-    // More reviews...
-  ],
-};
 
 const policies = [
   {
@@ -79,349 +54,83 @@ const ProductPage = (props: Props) => {
     });
   }, [id]);
 
+  const averageReviewRating = product
+    ? product.reviews.reduce((acc, item) => {
+        return acc + item.rating;
+      }, 0) / product.reviews.length
+    : 0;
+
   return (
-    <main>
-      {/* Product */}
-      <div className='bg-white'>
-        <div className='mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 sm:pt-24 sm:pb-32 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8'>
-          {/* Product details */}
-          <div className='lg:max-w-lg lg:self-end'>
-            <nav aria-label='Breadcrumb'>
-              <ol className='flex items-center space-x-2'>
-                <li>
-                  <div className='flex items-center text-sm'>
-                    <Link
-                      to={'/category/1'}
-                      className='font-medium text-gray-500 hover:text-gray-900'
-                    >
-                      Category name
-                    </Link>
-                    <svg
-                      viewBox='0 0 20 20'
-                      xmlns='http://www.w3.org/2000/svg'
-                      fill='currentColor'
-                      aria-hidden='true'
-                      className='ml-2 h-5 w-5 flex-shrink-0 text-gray-300'
-                    >
-                      <path d='M5.555 17.776l8-16 .894.448-8 16-.894-.448z' />
-                    </svg>
-                  </div>
-                </li>
-                <li>
-                  <div className='flex items-center text-sm'>
-                    <Link
-                      to={'/product/1'}
-                      className='font-medium text-gray-500 hover:text-gray-900'
-                    >
-                      {product?.title}
-                    </Link>
-                  </div>
-                </li>
-              </ol>
-            </nav>
-
-            <div className='mt-4'>
-              <h1 className='text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'>
-                {product?.title}
-              </h1>
-            </div>
-
-            <section aria-labelledby='information-heading' className='mt-4'>
-              <h2 id='information-heading' className='sr-only'>
-                Product information
-              </h2>
-
-              <div className='flex items-center'>
-                <p className='text-lg text-gray-900 sm:text-xl'>
-                  ${product?.price}
-                </p>
-
-                <div className='ml-4 border-l border-gray-300 pl-4'>
-                  <h2 className='sr-only'>Reviews</h2>
-                  <div className='flex items-center'>
-                    <div>
-                      <div className='flex items-center'>
-                        {[0, 1, 2, 3, 4].map((rating) => (
-                          <StarIcon
-                            key={rating}
-                            className={classNames(
-                              reviews.average > rating
-                                ? 'text-yellow-400'
-                                : 'text-gray-300',
-                              'h-5 w-5 flex-shrink-0'
-                            )}
-                            aria-hidden='true'
-                          />
-                        ))}
-                      </div>
-                      <p className='sr-only'>
-                        {reviews.average} out of 5 stars
-                      </p>
-                    </div>
-                    <p className='ml-2 text-sm text-gray-500'>
-                      {reviews.totalCount} reviews
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className='mt-4 space-y-6'>
-                <p className='text-base text-gray-500'>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos
-                </p>
-              </div>
-
-              <div className='mt-6 flex items-center'>
-                <CheckIcon
-                  className='h-5 w-5 flex-shrink-0 text-green-500'
-                  aria-hidden='true'
-                />
-                <p className='ml-2 text-sm text-gray-500'>
-                  {product?.quantity} left in stock and ready to ship
-                </p>
-              </div>
-            </section>
-          </div>
-
-          {/* Product image */}
-          <div className='mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center'>
-            <div className='aspect-w-1 aspect-h-1 overflow-hidden rounded-lg'>
-              <img
-                src={productPlaceholder}
-                alt='Front of men&#039;s Basic Tee in black.'
-                className='h-full w-full object-cover object-center'
-              />
-            </div>
-          </div>
-
-          {/* Product form */}
-          <div className='mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start'>
-            <section aria-labelledby='options-heading'>
-              <h2 id='options-heading' className='sr-only'>
-                Product options
-              </h2>
-
-              <form>
-                <div className='mt-10'>
-                  <button
-                    type='submit'
-                    className='flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50'
-                  >
-                    Add to bag
-                  </button>
-                </div>
-                <div className='mt-6 text-center'>
-                  <Link
-                    to='#'
-                    className='group inline-flex text-base font-medium'
-                  >
-                    <ShieldCheckIcon
-                      className='mr-2 h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
-                      aria-hidden='true'
-                    />
-                    <span className='text-gray-500 hover:text-gray-700'>
-                      Lifetime Guarantee
-                    </span>
-                  </Link>
-                </div>
-              </form>
-            </section>
-          </div>
-        </div>
-      </div>
-
-      <div className='mx-auto max-w-2xl px-4 py-24 sm:px-6 sm:py-32 lg:max-w-7xl lg:px-8'>
-        {/* Details section */}
-        <section aria-labelledby='details-heading'>
-          <div className='flex flex-col items-center text-center'>
-            <h2
-              id='details-heading'
-              className='text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'
-            >
-              The Fine Details
-            </h2>
-            <p className='mt-3 max-w-3xl text-lg text-gray-600'>
-              Our patented padded snack sleeve construction protects your
-              favorite treats from getting smooshed during all-day adventures,
-              long shifts at work, and tough travel schedules.
-            </p>
-          </div>
-
-          <div className='mt-16 grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:gap-x-8'>
-            <div>
-              <div className='aspect-w-3 aspect-h-2 w-full overflow-hidden rounded-lg'>
-                <img
-                  src='https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg'
-                  alt='Drawstring top with elastic loop closure and textured interior padding.'
-                  className='h-full w-full object-cover object-center'
-                />
-              </div>
-              <p className='mt-8 text-base text-gray-500'>
-                The 20L model has enough space for 370 candy bars, 6 cylinders
-                of chips, 1,220 standard gumballs, or any combination of
-                on-the-go treats that your heart desires. Yes, we did the math.
-              </p>
-            </div>
-            <div>
-              <div className='aspect-w-3 aspect-h-2 w-full overflow-hidden rounded-lg'>
-                <img
-                  src='https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-02.jpg'
-                  alt='Front zipper pouch with included key ring.'
-                  className='h-full w-full object-cover object-center'
-                />
-              </div>
-              <p className='mt-8 text-base text-gray-500'>
-                Up your snack organization game with multiple compartment
-                options. The quick-access stash pouch is ready for even the most
-                unexpected snack attacks and sharing needs.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Policies section */}
-        <section aria-labelledby='policy-heading' className='mt-16 lg:mt-24'>
-          <h2 id='policy-heading' className='sr-only'>
-            Our policies
-          </h2>
-          <div className='grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 lg:gap-x-8'>
-            {policies.map((policy) => (
-              <div key={policy.name}>
-                <img src={policy.imageSrc} alt='' className='h-24 w-auto' />
-                <h3 className='mt-6 text-base font-medium text-gray-900'>
-                  {policy.name}
-                </h3>
-                <p className='mt-3 text-base text-gray-500'>
-                  {policy.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-
-      <section aria-labelledby='reviews-heading' className='bg-white'>
-        <div className='mx-auto max-w-2xl py-24 px-4 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:py-32 lg:px-8'>
-          <div className='lg:col-span-4'>
-            <h2
-              id='reviews-heading'
-              className='text-2xl font-bold tracking-tight text-gray-900'
-            >
-              Customer Reviews
-            </h2>
-
-            <div className='mt-3 flex items-center'>
-              <div>
-                <div className='flex items-center'>
-                  {[0, 1, 2, 3, 4].map((rating) => (
-                    <StarIcon
-                      key={rating}
-                      className={classNames(
-                        reviews.average > rating
-                          ? 'text-yellow-400'
-                          : 'text-gray-300',
-                        'flex-shrink-0 h-5 w-5'
-                      )}
-                      aria-hidden='true'
-                    />
-                  ))}
-                </div>
-                <p className='sr-only'>{reviews.average} out of 5 stars</p>
-              </div>
-              <p className='ml-2 text-sm text-gray-900'>
-                Based on {reviews.totalCount} reviews
-              </p>
-            </div>
-
-            <div className='mt-6'>
-              <h3 className='sr-only'>Review data</h3>
-
-              <dl className='space-y-3'>
-                {reviews.counts.map((count) => (
-                  <div key={count.rating} className='flex items-center text-sm'>
-                    <dt className='flex flex-1 items-center'>
-                      <p className='w-3 font-medium text-gray-900'>
-                        {count.rating}
-                        <span className='sr-only'> star reviews</span>
-                      </p>
-                      <div
-                        aria-hidden='true'
-                        className='ml-1 flex flex-1 items-center'
+    product && (
+      <main>
+        {/* Product */}
+        <div className='bg-white'>
+          <div className='max-w-2xl px-4 pt-16 pb-24 mx-auto sm:px-6 sm:pt-24 sm:pb-32 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8'>
+            {/* Product details */}
+            <div className='lg:max-w-lg lg:self-end'>
+              <nav aria-label='Breadcrumb'>
+                <ol className='flex items-center space-x-2'>
+                  <li>
+                    <div className='flex items-center text-sm'>
+                      <Link
+                        to={`/category/${product.category.id}`}
+                        className='font-medium text-gray-500 hover:text-gray-900'
                       >
-                        <StarIcon
-                          className={classNames(
-                            count.count > 0
-                              ? 'text-yellow-400'
-                              : 'text-gray-300',
-                            'flex-shrink-0 h-5 w-5'
-                          )}
-                          aria-hidden='true'
-                        />
+                        {product.category.title}
+                      </Link>
+                      <svg
+                        viewBox='0 0 20 20'
+                        xmlns='http://www.w3.org/2000/svg'
+                        fill='currentColor'
+                        aria-hidden='true'
+                        className='flex-shrink-0 w-5 h-5 ml-2 text-gray-300'
+                      >
+                        <path d='M5.555 17.776l8-16 .894.448-8 16-.894-.448z' />
+                      </svg>
+                    </div>
+                  </li>
+                  <li>
+                    <div className='flex items-center text-sm'>
+                      <Link
+                        to={'/product/1'}
+                        className='font-medium text-gray-500 hover:text-gray-900'
+                      >
+                        {product.title}
+                      </Link>
+                    </div>
+                  </li>
+                </ol>
+              </nav>
 
-                        <div className='relative ml-3 flex-1'>
-                          <div className='h-3 rounded-full border border-gray-200 bg-gray-100' />
-                          {count.count > 0 ? (
-                            <div
-                              className='absolute inset-y-0 rounded-full border border-yellow-400 bg-yellow-400'
-                              style={{
-                                width: `calc(${count.count} / ${reviews.totalCount} * 100%)`,
-                              }}
-                            />
-                          ) : null}
-                        </div>
-                      </div>
-                    </dt>
-                    <dd className='ml-3 w-10 text-right text-sm tabular-nums text-gray-900'>
-                      {Math.round((count.count / reviews.totalCount) * 100)}%
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
+              <div className='mt-4'>
+                <h1 className='text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'>
+                  {product.title}
+                </h1>
+              </div>
 
-            <div className='mt-10'>
-              <h3 className='text-lg font-medium text-gray-900'>
-                Share your thoughts
-              </h3>
-              <p className='mt-1 text-sm text-gray-600'>
-                If you’ve used this product, share your thoughts with other
-                customers
-              </p>
+              <section aria-labelledby='information-heading' className='mt-4'>
+                <h2 id='information-heading' className='sr-only'>
+                  Product information
+                </h2>
 
-              <a
-                href='#'
-                className='mt-6 inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-8 text-sm font-medium text-gray-900 hover:bg-gray-50 sm:w-auto lg:w-full'
-              >
-                Write a review
-              </a>
-            </div>
-          </div>
+                <div className='flex items-center'>
+                  <p className='text-lg text-gray-900 sm:text-xl'>
+                    {formatPrice(product.price || 0)}
+                  </p>
 
-          <div className='mt-16 lg:col-span-7 lg:col-start-6 lg:mt-0'>
-            <h3 className='sr-only'>Recent reviews</h3>
-
-            <div className='flow-root'>
-              <div className='-my-12 divide-y divide-gray-200'>
-                {reviews.featured.map((review) => (
-                  <div key={review.id} className='py-12'>
+                  <div className='pl-4 ml-4 border-l border-gray-300'>
+                    <h2 className='sr-only'>Reviews</h2>
                     <div className='flex items-center'>
-                      <img
-                        src={review.avatarSrc}
-                        alt={`${review.author}.`}
-                        className='h-12 w-12 rounded-full'
-                      />
-                      <div className='ml-4'>
-                        <h4 className='text-sm font-bold text-gray-900'>
-                          {review.author}
-                        </h4>
-                        <div className='mt-1 flex items-center'>
+                      <div>
+                        <div className='flex items-center'>
                           {[0, 1, 2, 3, 4].map((rating) => (
                             <StarIcon
                               key={rating}
                               className={classNames(
-                                review.rating > rating
+                                averageReviewRating > rating
                                   ? 'text-yellow-400'
-                                  : 'text-gray-300',
+                                  : 'text-gray-200',
+
                                 'h-5 w-5 flex-shrink-0'
                               )}
                               aria-hidden='true'
@@ -429,23 +138,310 @@ const ProductPage = (props: Props) => {
                           ))}
                         </div>
                         <p className='sr-only'>
-                          {review.rating} out of 5 stars
+                          {averageReviewRating} out of 5 stars
                         </p>
                       </div>
+                      <p className='ml-2 text-sm text-gray-500'>
+                        {product.reviews.length} reviews
+                      </p>
                     </div>
-
-                    <div
-                      className='mt-4 space-y-6 text-base italic text-gray-600'
-                      dangerouslySetInnerHTML={{ __html: review.content }}
-                    />
                   </div>
-                ))}
+                </div>
+
+                <div className='mt-4 space-y-6'>
+                  <p className='text-base text-gray-500'>
+                    {product?.description}
+                  </p>
+                </div>
+
+                <div className='flex items-center mt-6'>
+                  <CheckIcon
+                    className='flex-shrink-0 w-5 h-5 text-green-500'
+                    aria-hidden='true'
+                  />
+                  <p className='ml-2 text-sm text-gray-500'>
+                    {product?.quantity} left in stock and ready to ship
+                  </p>
+                </div>
+              </section>
+            </div>
+
+            {/* Product image */}
+            <div className='mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center'>
+              <div className='overflow-hidden rounded-lg aspect-w-1 aspect-h-1'>
+                <img
+                  src={productPlaceholder}
+                  alt='Front of men&#039;s Basic Tee in black.'
+                  className='object-cover object-center w-full h-full'
+                />
               </div>
+            </div>
+
+            {/* Product form */}
+            <div className='mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start'>
+              <section aria-labelledby='options-heading'>
+                <h2 id='options-heading' className='sr-only'>
+                  Product options
+                </h2>
+
+                <form>
+                  <div className='mt-10'>
+                    <button
+                      type='submit'
+                      className='flex items-center justify-center w-full px-8 py-3 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50'
+                    >
+                      Add to bag
+                    </button>
+                  </div>
+                  <div className='mt-6 text-center'>
+                    <Link
+                      to='#'
+                      className='inline-flex text-base font-medium group'
+                    >
+                      <ShieldCheckIcon
+                        className='flex-shrink-0 w-6 h-6 mr-2 text-gray-400 group-hover:text-gray-500'
+                        aria-hidden='true'
+                      />
+                      <span className='text-gray-500 hover:text-gray-700'>
+                        Lifetime Guarantee
+                      </span>
+                    </Link>
+                  </div>
+                </form>
+              </section>
             </div>
           </div>
         </div>
-      </section>
-    </main>
+
+        <div className='max-w-2xl px-4 py-24 mx-auto sm:px-6 sm:py-32 lg:max-w-7xl lg:px-8'>
+          {/* Details section */}
+          <section aria-labelledby='details-heading'>
+            <div className='flex flex-col items-center text-center'>
+              <h2
+                id='details-heading'
+                className='text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'
+              >
+                The Fine Details
+              </h2>
+              <p className='max-w-3xl mt-3 text-lg text-gray-600'>
+                Our patented padded snack sleeve construction protects your
+                favorite treats from getting smooshed during all-day adventures,
+                long shifts at work, and tough travel schedules.
+              </p>
+            </div>
+
+            <div className='grid grid-cols-1 mt-16 gap-y-16 lg:grid-cols-2 lg:gap-x-8'>
+              <div>
+                <div className='w-full overflow-hidden rounded-lg aspect-w-3 aspect-h-2'>
+                  <img
+                    src='https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg'
+                    alt='Drawstring top with elastic loop closure and textured interior padding.'
+                    className='object-cover object-center w-full h-full'
+                  />
+                </div>
+                <p className='mt-8 text-base text-gray-500'>
+                  The 20L model has enough space for 370 candy bars, 6 cylinders
+                  of chips, 1,220 standard gumballs, or any combination of
+                  on-the-go treats that your heart desires. Yes, we did the
+                  math.
+                </p>
+              </div>
+              <div>
+                <div className='w-full overflow-hidden rounded-lg aspect-w-3 aspect-h-2'>
+                  <img
+                    src='https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-02.jpg'
+                    alt='Front zipper pouch with included key ring.'
+                    className='object-cover object-center w-full h-full'
+                  />
+                </div>
+                <p className='mt-8 text-base text-gray-500'>
+                  Up your snack organization game with multiple compartment
+                  options. The quick-access stash pouch is ready for even the
+                  most unexpected snack attacks and sharing needs.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Policies section */}
+          <section aria-labelledby='policy-heading' className='mt-16 lg:mt-24'>
+            <h2 id='policy-heading' className='sr-only'>
+              Our policies
+            </h2>
+            <div className='grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 lg:gap-x-8'>
+              {policies.map((policy) => (
+                <div key={policy.name}>
+                  <img src={policy.imageSrc} alt='' className='w-auto h-24' />
+                  <h3 className='mt-6 text-base font-medium text-gray-900'>
+                    {policy.name}
+                  </h3>
+                  <p className='mt-3 text-base text-gray-500'>
+                    {policy.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <section aria-labelledby='reviews-heading' className='bg-white'>
+          <div className='max-w-2xl px-4 py-24 mx-auto sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:py-32 lg:px-8'>
+            <div className='lg:col-span-4'>
+              <h2
+                id='reviews-heading'
+                className='text-2xl font-bold tracking-tight text-gray-900'
+              >
+                Customer Reviews
+              </h2>
+
+              <div className='flex items-center mt-3'>
+                <div>
+                  <div className='flex items-center'>
+                    {[0, 1, 2, 3, 4].map((rating) => (
+                      <StarIcon
+                        key={rating}
+                        className={classNames(
+                          averageReviewRating > rating
+                            ? 'text-yellow-400'
+                            : 'text-gray-300',
+                          'flex-shrink-0 h-5 w-5'
+                        )}
+                        aria-hidden='true'
+                      />
+                    ))}
+                  </div>
+                  <p className='sr-only'>
+                    {averageReviewRating} out of 5 stars
+                  </p>
+                </div>
+                <p className='ml-2 text-sm text-gray-900'>
+                  Based on {product.reviews.length} reviews
+                </p>
+              </div>
+
+              <div className='mt-6'>
+                <h3 className='sr-only'>Review data</h3>
+
+                <dl className='space-y-3'>
+                  {[5, 4, 3, 2, 1].map((count) => {
+                    const numberOfReviewsMatched = product.reviews.filter(
+                      (review) => review.rating === count
+                    ).length;
+                    return (
+                      <div key={count} className='flex items-center text-sm'>
+                        <dt className='flex items-center flex-1'>
+                          <p className='w-3 font-medium text-gray-900'>
+                            {count}
+                            <span className='sr-only'> star reviews</span>
+                          </p>
+                          <div
+                            aria-hidden='true'
+                            className='flex items-center flex-1 ml-1'
+                          >
+                            <StarIcon
+                              className={classNames(
+                                numberOfReviewsMatched > 0
+                                  ? 'text-yellow-400'
+                                  : 'text-gray-300',
+                                'flex-shrink-0 h-5 w-5'
+                              )}
+                              aria-hidden='true'
+                            />
+
+                            <div className='relative flex-1 ml-3'>
+                              <div className='h-3 bg-gray-100 border border-gray-200 rounded-full' />
+                              {numberOfReviewsMatched > 0 ? (
+                                <div
+                                  className='absolute inset-y-0 bg-yellow-400 border border-yellow-400 rounded-full'
+                                  style={{
+                                    width: `calc(${numberOfReviewsMatched} / ${product.reviews.length} * 100%)`,
+                                  }}
+                                />
+                              ) : null}
+                            </div>
+                          </div>
+                        </dt>
+                        <dd className='w-10 ml-3 text-sm text-right text-gray-900 tabular-nums'>
+                          {Math.round(
+                            (numberOfReviewsMatched / product.reviews.length) *
+                              100
+                          )}
+                          %
+                        </dd>
+                      </div>
+                    );
+                  })}
+                </dl>
+              </div>
+
+              <div className='mt-10'>
+                <h3 className='text-lg font-medium text-gray-900'>
+                  Share your thoughts
+                </h3>
+                <p className='mt-1 text-sm text-gray-600'>
+                  If you’ve used this product, share your thoughts with other
+                  customers
+                </p>
+
+                <a
+                  href='#'
+                  className='inline-flex items-center justify-center w-full px-8 py-2 mt-6 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50 sm:w-auto lg:w-full'
+                >
+                  Write a review
+                </a>
+              </div>
+            </div>
+
+            <div className='mt-16 lg:col-span-7 lg:col-start-6 lg:mt-0'>
+              <h3 className='sr-only'>Recent reviews</h3>
+
+              <div className='flow-root'>
+                <div className='-my-12 divide-y divide-gray-200'>
+                  {product.reviews.map((review) => (
+                    <div key={review.id} className='py-12'>
+                      <div className='flex items-center'>
+                        <img
+                          src={review.student.avatar || productPlaceholder}
+                          alt={`${review.student.firstName}.`}
+                          className='w-12 h-12 rounded-full'
+                        />
+                        <div className='ml-4'>
+                          <h4 className='text-sm font-bold text-gray-900'>
+                            {review.student.firstName} {review.student.lastName}
+                          </h4>
+                          <div className='flex items-center mt-1'>
+                            {[0, 1, 2, 3, 4].map((rating) => (
+                              <StarIcon
+                                key={rating}
+                                className={classNames(
+                                  review.rating > rating
+                                    ? 'text-yellow-400'
+                                    : 'text-gray-300',
+                                  'h-5 w-5 flex-shrink-0'
+                                )}
+                                aria-hidden='true'
+                              />
+                            ))}
+                          </div>
+                          <p className='sr-only'>
+                            {review.rating} out of 5 stars
+                          </p>
+                        </div>
+                      </div>
+
+                      <div
+                        className='mt-4 space-y-6 text-base italic text-gray-600'
+                        dangerouslySetInnerHTML={{ __html: review.comment }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    )
   );
 };
 

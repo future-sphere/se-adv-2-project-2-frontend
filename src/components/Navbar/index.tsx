@@ -9,6 +9,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { classNames } from '../../helpers';
 
 type Props = {};
 
@@ -95,10 +96,6 @@ const navigation = {
   ],
 };
 
-export function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
 const Navbar = (props: Props) => {
   const [open, setOpen] = useState(false);
 
@@ -128,22 +125,22 @@ const Navbar = (props: Props) => {
               leaveFrom='translate-x-0'
               leaveTo='-translate-x-full'
             >
-              <Dialog.Panel className='relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl'>
+              <Dialog.Panel className='relative flex flex-col w-full max-w-xs pb-12 overflow-y-auto bg-white shadow-xl'>
                 <div className='flex px-4 pt-5 pb-2'>
                   <button
                     type='button'
-                    className='-m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400'
+                    className='inline-flex items-center justify-center p-2 -m-2 text-gray-400 rounded-md'
                     onClick={() => setOpen(false)}
                   >
                     <span className='sr-only'>Close menu</span>
-                    <XMarkIcon className='h-6 w-6' aria-hidden='true' />
+                    <XMarkIcon className='w-6 h-6' aria-hidden='true' />
                   </button>
                 </div>
 
                 {/* Links */}
                 <Tab.Group as='div' className='mt-2'>
                   <div className='border-b border-gray-200'>
-                    <Tab.List className='-mb-px flex space-x-8 px-4'>
+                    <Tab.List className='flex px-4 -mb-px space-x-8'>
                       {navigation.categories.map((category) => (
                         <Tab
                           key={category.name}
@@ -165,12 +162,12 @@ const Navbar = (props: Props) => {
                     {navigation.categories.map((category) => (
                       <Tab.Panel
                         key={category.name}
-                        className='space-y-12 px-4 py-6'
+                        className='px-4 py-6 space-y-12'
                       >
                         <div className='grid grid-cols-2 gap-x-4 gap-y-10'>
                           {category.featured.map((item) => (
-                            <div key={item.name} className='group relative'>
-                              <div className='aspect-w-1 aspect-h-1 overflow-hidden rounded-md bg-gray-100 group-hover:opacity-75'>
+                            <div key={item.name} className='relative group'>
+                              <div className='overflow-hidden bg-gray-100 rounded-md aspect-w-1 aspect-h-1 group-hover:opacity-75'>
                                 <img
                                   src={item.imageSrc}
                                   alt={item.imageAlt}
@@ -179,7 +176,7 @@ const Navbar = (props: Props) => {
                               </div>
                               <a
                                 href={item.href}
-                                className='mt-6 block text-sm font-medium text-gray-900'
+                                className='block mt-6 text-sm font-medium text-gray-900'
                               >
                                 <span
                                   className='absolute inset-0 z-10'
@@ -201,12 +198,12 @@ const Navbar = (props: Props) => {
                   </Tab.Panels>
                 </Tab.Group>
 
-                <div className='space-y-6 border-t border-gray-200 py-6 px-4'>
+                <div className='px-4 py-6 space-y-6 border-t border-gray-200'>
                   {navigation.pages.map((page) => (
                     <div key={page.name} className='flow-root'>
                       <a
                         href={page.href}
-                        className='-m-2 block p-2 font-medium text-gray-900'
+                        className='block p-2 -m-2 font-medium text-gray-900'
                       >
                         {page.name}
                       </a>
@@ -214,11 +211,11 @@ const Navbar = (props: Props) => {
                   ))}
                 </div>
 
-                <div className='space-y-6 border-t border-gray-200 py-6 px-4'>
+                <div className='px-4 py-6 space-y-6 border-t border-gray-200'>
                   <div className='flow-root'>
                     <a
                       href='#'
-                      className='-m-2 block p-2 font-medium text-gray-900'
+                      className='block p-2 -m-2 font-medium text-gray-900'
                     >
                       Create an account
                     </a>
@@ -226,21 +223,21 @@ const Navbar = (props: Props) => {
                   <div className='flow-root'>
                     <a
                       href='#'
-                      className='-m-2 block p-2 font-medium text-gray-900'
+                      className='block p-2 -m-2 font-medium text-gray-900'
                     >
                       Sign in
                     </a>
                   </div>
                 </div>
 
-                <div className='space-y-6 border-t border-gray-200 py-6 px-4'>
+                <div className='px-4 py-6 space-y-6 border-t border-gray-200'>
                   {/* Currency selector */}
                   <form>
                     <div className='inline-block'>
                       <label htmlFor='mobile-currency' className='sr-only'>
                         Currency
                       </label>
-                      <div className='group relative -ml-2 rounded-md border-transparent focus-within:ring-2 focus-within:ring-white'>
+                      <div className='relative -ml-2 border-transparent rounded-md group focus-within:ring-2 focus-within:ring-white'>
                         <select
                           id='mobile-currency'
                           name='currency'
@@ -250,9 +247,9 @@ const Navbar = (props: Props) => {
                             <option key={currency}>{currency}</option>
                           ))}
                         </select>
-                        <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center'>
+                        <div className='absolute inset-y-0 right-0 flex items-center pointer-events-none'>
                           <ChevronDownIcon
-                            className='h-5 w-5 text-gray-500'
+                            className='w-5 h-5 text-gray-500'
                             aria-hidden='true'
                           />
                         </div>
@@ -270,14 +267,14 @@ const Navbar = (props: Props) => {
         <nav aria-label='Top'>
           {/* Top navigation */}
           <div className='bg-gray-900'>
-            <div className='mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8'>
+            <div className='flex items-center justify-between h-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8'>
               {/* Currency selector */}
               <form>
                 <div>
                   <label htmlFor='desktop-currency' className='sr-only'>
                     Currency
                   </label>
-                  <div className='group relative -ml-2 rounded-md border-transparent bg-gray-900 focus-within:ring-2 focus-within:ring-white'>
+                  <div className='relative -ml-2 bg-gray-900 border-transparent rounded-md group focus-within:ring-2 focus-within:ring-white'>
                     <select
                       id='desktop-currency'
                       name='currency'
@@ -287,9 +284,9 @@ const Navbar = (props: Props) => {
                         <option key={currency}>{currency}</option>
                       ))}
                     </select>
-                    <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center'>
+                    <div className='absolute inset-y-0 right-0 flex items-center pointer-events-none'>
                       <ChevronDownIcon
-                        className='h-5 w-5 text-gray-300'
+                        className='w-5 h-5 text-gray-300'
                         aria-hidden='true'
                       />
                     </div>
@@ -316,14 +313,14 @@ const Navbar = (props: Props) => {
 
           {/* Secondary navigation */}
           <div className='bg-white'>
-            <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-              <div className='flex h-16 items-center justify-between'>
+            <div className='px-4 mx-auto max-w-7xl sm:px-6 lg:px-8'>
+              <div className='flex items-center justify-between h-16'>
                 {/* Logo (lg+) */}
                 <div className='hidden lg:flex lg:flex-1 lg:items-center'>
                   <a href='#'>
                     <span className='sr-only'>Your Company</span>
                     <img
-                      className='h-8 w-auto'
+                      className='w-auto h-8'
                       src='https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600'
                       alt=''
                     />
@@ -333,7 +330,7 @@ const Navbar = (props: Props) => {
                 <div className='hidden h-full lg:flex'>
                   {/* Flyout menus */}
                   <Popover.Group className='inset-x-0 bottom-0 px-4'>
-                    <div className='flex h-full justify-center space-x-8'>
+                    <div className='flex justify-center h-full space-x-8'>
                       {navigation.categories.map((category) => (
                         <Popover key={category.name} className='flex'>
                           {({ open }) => (
@@ -367,15 +364,15 @@ const Navbar = (props: Props) => {
                                 leaveFrom='opacity-100'
                                 leaveTo='opacity-0'
                               >
-                                <Popover.Panel className='absolute inset-x-0 top-full z-10 bg-white text-sm text-gray-500'>
+                                <Popover.Panel className='absolute inset-x-0 z-10 text-sm text-gray-500 bg-white top-full'>
                                   {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
                                   <div
-                                    className='absolute inset-0 top-1/2 bg-white shadow'
+                                    className='absolute inset-0 bg-white shadow top-1/2'
                                     aria-hidden='true'
                                   />
                                   {/* Fake border when menu is open */}
                                   <div
-                                    className='absolute inset-0 top-0 mx-auto h-px max-w-7xl px-8'
+                                    className='absolute inset-0 top-0 h-px px-8 mx-auto max-w-7xl'
                                     aria-hidden='true'
                                   >
                                     <div
@@ -387,14 +384,14 @@ const Navbar = (props: Props) => {
                                   </div>
 
                                   <div className='relative'>
-                                    <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-                                      <div className='grid grid-cols-4 gap-y-10 gap-x-8 py-16'>
+                                    <div className='px-4 mx-auto max-w-7xl sm:px-6 lg:px-8'>
+                                      <div className='grid grid-cols-4 py-16 gap-y-10 gap-x-8'>
                                         {category.featured.map((item) => (
                                           <div
                                             key={item.name}
-                                            className='group relative'
+                                            className='relative group'
                                           >
-                                            <div className='aspect-w-1 aspect-h-1 overflow-hidden rounded-md bg-gray-100 group-hover:opacity-75'>
+                                            <div className='overflow-hidden bg-gray-100 rounded-md aspect-w-1 aspect-h-1 group-hover:opacity-75'>
                                               <img
                                                 src={item.imageSrc}
                                                 alt={item.imageAlt}
@@ -403,7 +400,7 @@ const Navbar = (props: Props) => {
                                             </div>
                                             <a
                                               href={item.href}
-                                              className='mt-4 block font-medium text-gray-900'
+                                              className='block mt-4 font-medium text-gray-900'
                                             >
                                               <span
                                                 className='absolute inset-0 z-10'
@@ -443,24 +440,24 @@ const Navbar = (props: Props) => {
                 </div>
 
                 {/* Mobile menu and search (lg-) */}
-                <div className='flex flex-1 items-center lg:hidden'>
+                <div className='flex items-center flex-1 lg:hidden'>
                   <button
                     type='button'
-                    className='-ml-2 rounded-md bg-white p-2 text-gray-400'
+                    className='p-2 -ml-2 text-gray-400 bg-white rounded-md'
                     onClick={() => setOpen(true)}
                   >
                     <span className='sr-only'>Open menu</span>
-                    <Bars3Icon className='h-6 w-6' aria-hidden='true' />
+                    <Bars3Icon className='w-6 h-6' aria-hidden='true' />
                   </button>
 
                   {/* Search */}
                   <a
                     href='#'
-                    className='ml-2 p-2 text-gray-400 hover:text-gray-500'
+                    className='p-2 ml-2 text-gray-400 hover:text-gray-500'
                   >
                     <span className='sr-only'>Search</span>
                     <MagnifyingGlassIcon
-                      className='h-6 w-6'
+                      className='w-6 h-6'
                       aria-hidden='true'
                     />
                   </a>
@@ -472,11 +469,11 @@ const Navbar = (props: Props) => {
                   <img
                     src='https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600'
                     alt=''
-                    className='h-8 w-auto'
+                    className='w-auto h-8'
                   />
                 </a>
 
-                <div className='flex flex-1 items-center justify-end'>
+                <div className='flex items-center justify-end flex-1'>
                   <a
                     href='#'
                     className='hidden text-sm font-medium text-gray-700 hover:text-gray-800 lg:block'
@@ -492,7 +489,7 @@ const Navbar = (props: Props) => {
                     >
                       <span className='sr-only'>Help</span>
                       <QuestionMarkCircleIcon
-                        className='h-6 w-6'
+                        className='w-6 h-6'
                         aria-hidden='true'
                       />
                     </a>
@@ -504,10 +501,10 @@ const Navbar = (props: Props) => {
                     </a>
 
                     {/* Cart */}
-                    <div className='ml-4 flow-root lg:ml-8'>
-                      <a href='#' className='group -m-2 flex items-center p-2'>
+                    <div className='flow-root ml-4 lg:ml-8'>
+                      <a href='#' className='flex items-center p-2 -m-2 group'>
                         <ShoppingBagIcon
-                          className='h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
+                          className='flex-shrink-0 w-6 h-6 text-gray-400 group-hover:text-gray-500'
                           aria-hidden='true'
                         />
                         <span className='ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800'>

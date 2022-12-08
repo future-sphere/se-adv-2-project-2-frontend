@@ -1,5 +1,6 @@
 import React from 'react';
 import { productPlaceholder } from '../../constants';
+import { formatPrice } from '../../helpers';
 import { Product } from '../../interfaces';
 import a from '../../services';
 
@@ -16,7 +17,7 @@ const TrendingSection = (props: Props) => {
 
   return (
     <section aria-labelledby='trending-heading'>
-      <div className='mx-auto max-w-7xl py-24 px-4 sm:px-6 sm:py-32 lg:px-8 lg:pt-32'>
+      <div className='px-4 py-24 mx-auto max-w-7xl sm:px-6 sm:py-32 lg:px-8 lg:pt-32'>
         <div className='md:flex md:items-center md:justify-between'>
           <h2
             id='favorites-heading'
@@ -33,14 +34,14 @@ const TrendingSection = (props: Props) => {
           </a>
         </div>
 
-        <div className='mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8'>
+        <div className='grid grid-cols-2 mt-6 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8'>
           {data.map((product, index) => (
-            <div key={index} className='group relative'>
-              <div className='h-56 w-full overflow-hidden rounded-md group-hover:opacity-75 lg:h-72 xl:h-80'>
+            <div key={index} className='relative group'>
+              <div className='w-full h-56 overflow-hidden rounded-md group-hover:opacity-75 lg:h-72 xl:h-80'>
                 <img
                   src={productPlaceholder}
                   alt={product.title}
-                  className='h-full w-full object-cover object-center'
+                  className='object-cover object-center w-full h-full'
                 />
               </div>
               <h3 className='mt-4 text-sm text-gray-700'>
@@ -50,7 +51,7 @@ const TrendingSection = (props: Props) => {
                 </a>
               </h3>
               <p className='mt-1 text-sm font-medium text-gray-900'>
-                ${product.price}
+                {formatPrice(product.price)}
               </p>
             </div>
           ))}
