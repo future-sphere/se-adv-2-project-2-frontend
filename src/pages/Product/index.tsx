@@ -1,14 +1,18 @@
 import {
+  ChatBubbleBottomCenterTextIcon,
   CheckIcon,
   ShieldCheckIcon,
-  StarIcon,
+  TrashIcon,
 } from '@heroicons/react/24/outline';
-import React, { useEffect } from 'react';
+import { StarIcon } from '@heroicons/react/24/solid';
+
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { classNames, formatPrice } from '../../helpers';
 import { productPlaceholder } from '../../constants';
 import { Product } from '../../interfaces';
 import a from '../../services';
+import { Dialog, RadioGroup, Transition } from '@headlessui/react';
 
 type Props = {};
 
@@ -46,12 +50,20 @@ const ProductPage = (props: Props) => {
   const location = useLocation();
   const id = location.pathname.split('/')[2];
   const [product, setProduct] = React.useState<Product | null>(null);
+  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
+  const cancelButtonRef = useRef(null);
+  const [review, setReview] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [selectedRating, setSelectedRating] = useState(1);
 
-  useEffect(() => {
-    console.log(id, 'id is populated');
+  const fetchProduct = async () => {
     a.get('/products/' + id).then((res) => {
       setProduct(res.data);
     });
+  };
+
+  useEffect(() => {
+    fetchProduct();
   }, [id]);
 
   const averageReviewRating = product
@@ -60,9 +72,32 @@ const ProductPage = (props: Props) => {
       }, 0) / product.reviews.length
     : 0;
 
+  const handleReviewSubmit = () => {
+    setLoading(true);
+    a.post('/reviews', {
+      productId: product?.id,
+      rating: selectedRating,
+      comment: review,
+    }).then((res) => {
+      console.log(res.data);
+      setReviewModalOpen(false);
+      setReview('');
+      fetchProduct();
+      setLoading(false);
+    });
+  };
+
+  const handleReviewDelete = (id: number) => {
+    setLoading(true);
+    a.delete('/reviews/' + id).then((res) => {
+      fetchProduct();
+      setLoading(false);
+    });
+  };
+
   return (
     product && (
-      <main>
+      <div>
         {/* Product */}
         <div className='bg-white'>
           <div className='max-w-2xl px-4 pt-16 pb-24 mx-auto sm:px-6 sm:pt-24 sm:pb-32 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8'>
@@ -160,7 +195,7 @@ const ProductPage = (props: Props) => {
                     aria-hidden='true'
                   />
                   <p className='ml-2 text-sm text-gray-500'>
-                    {product?.quantity} left in stock and ready to ship
+                    {product.quantity} left in stock and ready to ship
                   </p>
                 </div>
               </section>
@@ -170,7 +205,7 @@ const ProductPage = (props: Props) => {
             <div className='mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center'>
               <div className='overflow-hidden rounded-lg aspect-w-1 aspect-h-1'>
                 <img
-                  src={productPlaceholder}
+                  src={product.thumbnailImage}
                   alt='Front of men&#039;s Basic Tee in black.'
                   className='object-cover object-center w-full h-full'
                 />
@@ -221,45 +256,31 @@ const ProductPage = (props: Props) => {
                 id='details-heading'
                 className='text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'
               >
-                The Fine Details
+                {product.highlightTitle}
               </h2>
               <p className='max-w-3xl mt-3 text-lg text-gray-600'>
-                Our patented padded snack sleeve construction protects your
-                favorite treats from getting smooshed during all-day adventures,
-                long shifts at work, and tough travel schedules.
+                {product.highlightDescription}
               </p>
             </div>
 
             <div className='grid grid-cols-1 mt-16 gap-y-16 lg:grid-cols-2 lg:gap-x-8'>
-              <div>
-                <div className='w-full overflow-hidden rounded-lg aspect-w-3 aspect-h-2'>
-                  <img
-                    src='https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg'
-                    alt='Drawstring top with elastic loop closure and textured interior padding.'
-                    className='object-cover object-center w-full h-full'
-                  />
+              {product.productHighlights.map((highlight) => (
+                <div>
+                  <div className='w-full overflow-hidden rounded-lg aspect-w-3 aspect-h-2'>
+                    <img
+                      src={highlight.image}
+                      alt='Drawstring top with elastic loop closure and textured interior padding.'
+                      className='object-cover object-center w-full h-full'
+                    />
+                  </div>
+                  <p className='mt-8 text-lg font-bold text-gray-500'>
+                    {highlight.title}
+                  </p>
+                  <p className='mt-1 text-base text-gray-500'>
+                    {highlight.subtitle}
+                  </p>
                 </div>
-                <p className='mt-8 text-base text-gray-500'>
-                  The 20L model has enough space for 370 candy bars, 6 cylinders
-                  of chips, 1,220 standard gumballs, or any combination of
-                  on-the-go treats that your heart desires. Yes, we did the
-                  math.
-                </p>
-              </div>
-              <div>
-                <div className='w-full overflow-hidden rounded-lg aspect-w-3 aspect-h-2'>
-                  <img
-                    src='https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-02.jpg'
-                    alt='Front zipper pouch with included key ring.'
-                    className='object-cover object-center w-full h-full'
-                  />
-                </div>
-                <p className='mt-8 text-base text-gray-500'>
-                  Up your snack organization game with multiple compartment
-                  options. The quick-access stash pouch is ready for even the
-                  most unexpected snack attacks and sharing needs.
-                </p>
-              </div>
+              ))}
             </div>
           </section>
 
@@ -383,12 +404,12 @@ const ProductPage = (props: Props) => {
                   customers
                 </p>
 
-                <a
-                  href='#'
+                <button
+                  onClick={() => setReviewModalOpen(true)}
                   className='inline-flex items-center justify-center w-full px-8 py-2 mt-6 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50 sm:w-auto lg:w-full'
                 >
                   Write a review
-                </a>
+                </button>
               </div>
             </div>
 
@@ -398,7 +419,11 @@ const ProductPage = (props: Props) => {
               <div className='flow-root'>
                 <div className='-my-12 divide-y divide-gray-200'>
                   {product.reviews.map((review) => (
-                    <div key={review.id} className='py-12'>
+                    <div key={review.id} className='relative py-12'>
+                      <TrashIcon
+                        onClick={() => handleReviewDelete(review.id)}
+                        className='absolute right-0 w-10 h-10 p-2 text-gray-300 cursor-pointer top-12'
+                      />
                       <div className='flex items-center'>
                         <img
                           src={review.student.avatar || productPlaceholder}
@@ -440,7 +465,120 @@ const ProductPage = (props: Props) => {
             </div>
           </div>
         </section>
-      </main>
+        <Transition.Root show={isReviewModalOpen} as={Fragment}>
+          <Dialog
+            as='div'
+            className='relative z-10'
+            initialFocus={cancelButtonRef}
+            onClose={setReviewModalOpen}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter='ease-out duration-300'
+              enterFrom='opacity-0'
+              enterTo='opacity-100'
+              leave='ease-in duration-200'
+              leaveFrom='opacity-100'
+              leaveTo='opacity-0'
+            >
+              <div className='fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75' />
+            </Transition.Child>
+
+            <div className='fixed inset-0 z-10 overflow-y-auto'>
+              <div className='flex items-end justify-center min-h-full p-4 text-center sm:items-center sm:p-0'>
+                <Transition.Child
+                  as={Fragment}
+                  enter='ease-out duration-300'
+                  enterFrom='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
+                  enterTo='opacity-100 translate-y-0 sm:scale-100'
+                  leave='ease-in duration-200'
+                  leaveFrom='opacity-100 translate-y-0 sm:scale-100'
+                  leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
+                >
+                  <Dialog.Panel className='relative overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:w-full sm:max-w-lg'>
+                    <div className='px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4'>
+                      <div className='sm:flex sm:items-start'>
+                        <div className='flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-blue-100 rounded-full sm:mx-0 sm:h-10 sm:w-10'>
+                          <ChatBubbleBottomCenterTextIcon
+                            className='w-6 h-6 text-blue-600'
+                            aria-hidden='true'
+                          />
+                        </div>
+                        <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
+                          <Dialog.Title
+                            as='h3'
+                            className='text-lg font-medium leading-6 text-gray-900'
+                          >
+                            Leave a review
+                          </Dialog.Title>
+                          <div className='mt-2'>
+                            <p className='text-sm text-gray-500'>
+                              Your review will be posted publicly on the web, so
+                              be nice.
+                            </p>
+                          </div>
+                          <div className='space-y-2'>
+                            <RadioGroup
+                              value={selectedRating}
+                              onChange={setSelectedRating}
+                            >
+                              <RadioGroup.Label className='block text-sm font-medium text-gray-700'>
+                                Choose a label color
+                              </RadioGroup.Label>
+                              <div className='flex items-center mt-4 space-x-3'>
+                                {[1, 2, 3, 4, 5].map((rating, index) => (
+                                  <RadioGroup.Option key={index} value={rating}>
+                                    <StarIcon
+                                      className={classNames(
+                                        'w-8 h-8',
+                                        selectedRating >= rating
+                                          ? 'text-yellow-400'
+                                          : 'text-gray-300'
+                                      )}
+                                    />
+                                  </RadioGroup.Option>
+                                ))}
+                              </div>
+                            </RadioGroup>
+
+                            <textarea
+                              rows={4}
+                              onChange={(e) => setReview(e.target.value)}
+                              value={review}
+                              name='comment'
+                              id='comment'
+                              className='block w-full p-2 border-gray-900 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                              defaultValue={''}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='px-4 py-3 bg-gray-50 sm:flex sm:flex-row-reverse sm:px-6'>
+                      <button
+                        type='button'
+                        disabled={loading}
+                        className='inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm'
+                        onClick={handleReviewSubmit}
+                      >
+                        {loading ? 'Posting...' : 'Post review'}
+                      </button>
+                      <button
+                        type='button'
+                        className='inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
+                        onClick={() => setReviewModalOpen(false)}
+                        ref={cancelButtonRef}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition.Root>
+      </div>
     )
   );
 };

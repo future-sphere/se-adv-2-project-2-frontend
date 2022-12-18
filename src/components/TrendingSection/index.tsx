@@ -39,7 +39,7 @@ const TrendingSection = (props: Props) => {
             <div key={index} className='relative group'>
               <div className='w-full h-56 overflow-hidden rounded-md group-hover:opacity-75 lg:h-72 xl:h-80'>
                 <img
-                  src={productPlaceholder}
+                  src={product.thumbnailImage}
                   alt={product.title}
                   className='object-cover object-center w-full h-full'
                 />

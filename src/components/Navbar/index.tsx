@@ -10,8 +10,12 @@ import {
 } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { classNames } from '../../helpers';
+import { Link } from 'react-router-dom';
+import { Category } from '../../interfaces';
 
-type Props = {};
+type Props = {
+  categories: Category[];
+};
 
 const currencies = ['CAD', 'USD', 'AUD', 'EUR', 'GBP'];
 const navigation = {
@@ -96,7 +100,7 @@ const navigation = {
   ],
 };
 
-const Navbar = (props: Props) => {
+const Navbar = ({ categories }: Props) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -317,14 +321,14 @@ const Navbar = (props: Props) => {
               <div className='flex items-center justify-between h-16'>
                 {/* Logo (lg+) */}
                 <div className='hidden lg:flex lg:flex-1 lg:items-center'>
-                  <a href='#'>
+                  <Link to='/'>
                     <span className='sr-only'>Your Company</span>
                     <img
                       className='w-auto h-8'
                       src='https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600'
                       alt=''
                     />
-                  </a>
+                  </Link>
                 </div>
 
                 <div className='hidden h-full lg:flex'>
@@ -464,14 +468,14 @@ const Navbar = (props: Props) => {
                 </div>
 
                 {/* Logo (lg-) */}
-                <a href='#' className='lg:hidden'>
+                <Link to='/' className='lg:hidden'>
                   <span className='sr-only'>Your Company</span>
                   <img
                     src='https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600'
                     alt=''
                     className='w-auto h-8'
                   />
-                </a>
+                </Link>
 
                 <div className='flex items-center justify-end flex-1'>
                   <a
