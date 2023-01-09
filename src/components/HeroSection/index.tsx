@@ -93,7 +93,7 @@ const HeroSection = ({ categories }: Props) => {
                       Shop the collection
                     </p>
                     <h3 className='mt-1 font-semibold text-white'>
-                      <Link to={`/category/${category.id}`}>
+                      <Link to={`/category/${category.slug}`}>
                         <span className='absolute inset-0' />
                         {category.title}
                       </Link>

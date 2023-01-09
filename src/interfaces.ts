@@ -1,9 +1,11 @@
 export interface Product {
   id: number;
   title: string;
+  slug: string;
   price: number;
   quantity: number;
   category: Category;
+  subCategory: SubCategory;
   thumbnailImage: string;
   reviews: Review[];
   description: string;
@@ -32,11 +34,22 @@ export interface Review {
 
 export interface Category {
   id: number;
+  slug: string;
   title: string;
   products: Product[];
   description: string;
   thumbnailImageUrl: string;
   heroImageUrl: string;
+  subCategory: SubCategory[];
+}
+
+export interface SubCategory {
+  id: string;
+  title: string;
+  slug: string;
+  category: Category;
+  categoryId: string;
+  products: Product[];
 }
 
 export interface Student {

@@ -48,7 +48,7 @@ const policies = [
 
 const ProductPage = (props: Props) => {
   const location = useLocation();
-  const id = location.pathname.split('/')[2];
+  const slug = location.pathname.split('/')[2];
   const [product, setProduct] = React.useState<Product | null>(null);
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
   const cancelButtonRef = useRef(null);
@@ -57,14 +57,14 @@ const ProductPage = (props: Props) => {
   const [selectedRating, setSelectedRating] = useState(1);
 
   const fetchProduct = async () => {
-    a.get('/products/' + id).then((res) => {
+    a.get('/products/' + slug).then((res) => {
       setProduct(res.data);
     });
   };
 
   useEffect(() => {
     fetchProduct();
-  }, [id]);
+  }, [slug]);
 
   const averageReviewRating = product
     ? product.reviews.reduce((acc, item) => {
@@ -95,6 +95,8 @@ const ProductPage = (props: Props) => {
     });
   };
 
+  console.log(product);
+
   return (
     product && (
       <div>
@@ -108,7 +110,7 @@ const ProductPage = (props: Props) => {
                   <li>
                     <div className='flex items-center text-sm'>
                       <Link
-                        to={`/category/${product.category.id}`}
+                        to={`/category/${product.category.slug}}`}
                         className='font-medium text-gray-500 hover:text-gray-900'
                       >
                         {product.category.title}
@@ -127,7 +129,26 @@ const ProductPage = (props: Props) => {
                   <li>
                     <div className='flex items-center text-sm'>
                       <Link
-                        to={'/product/1'}
+                        to={`/subcategory/${product.subCategory.slug}}`}
+                        className='font-medium text-gray-500 hover:text-gray-900'
+                      >
+                        {product.subCategory.title}
+                      </Link>
+                      <svg
+                        viewBox='0 0 20 20'
+                        xmlns='http://www.w3.org/2000/svg'
+                        fill='currentColor'
+                        aria-hidden='true'
+                        className='flex-shrink-0 w-5 h-5 ml-2 text-gray-300'
+                      >
+                        <path d='M5.555 17.776l8-16 .894.448-8 16-.894-.448z' />
+                      </svg>
+                    </div>
+                  </li>
+                  <li>
+                    <div className='flex items-center text-sm'>
+                      <Link
+                        to={`/product/${product.slug}`}
                         className='font-medium text-gray-500 hover:text-gray-900'
                       >
                         {product.title}

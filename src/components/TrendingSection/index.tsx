@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { productPlaceholder } from '../../constants';
 import { formatPrice } from '../../helpers';
 import { Product } from '../../interfaces';
@@ -45,10 +46,10 @@ const TrendingSection = (props: Props) => {
                 />
               </div>
               <h3 className='mt-4 text-sm text-gray-700'>
-                <a href={`/product/${product.id}`}>
+                <Link to={`/product/${product.slug}`}>
                   <span className='absolute inset-0' />
                   {product.title}
-                </a>
+                </Link>
               </h3>
               <p className='mt-1 text-sm font-medium text-gray-900'>
                 {formatPrice(product.price)}

@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
 import LandingPage from './pages/Landing';
 import Layout from './components/Layout';
 import ProductPage from './pages/Product';
+import SubCategoryPage from './pages/Subcategory';
 import CategoryPage from './pages/Category';
 
 const root = ReactDOM.createRoot(
@@ -52,6 +53,17 @@ root.render(
             {
               path: ':id',
               element: <CategoryPage />,
+            },
+          ],
+        },
+        {
+          path: '/subcategory',
+          element: <Layout />,
+          errorElement: <h1>404</h1>,
+          children: [
+            {
+              path: ':id',
+              element: <SubCategoryPage />,
             },
           ],
         },
