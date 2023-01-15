@@ -50,12 +50,12 @@ const HeroSection = ({ categories }: Props) => {
             Mid-Season Sale
           </h1>
           <div className='mt-4 sm:mt-6'>
-            <a
-              href='#'
+            <Link
+              to='/category'
               className='inline-block px-8 py-3 font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700'
             >
               Shop Collection
-            </a>
+            </Link>
           </div>
         </div>
       </div>

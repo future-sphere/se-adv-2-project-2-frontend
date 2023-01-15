@@ -50,6 +50,7 @@ export interface SubCategory {
   category: Category;
   categoryId: string;
   products: Product[];
+  thumbnailImageUrl: string;
 }
 
 export interface Student {

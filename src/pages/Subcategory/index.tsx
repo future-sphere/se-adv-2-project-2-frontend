@@ -82,17 +82,17 @@ const products = [
 
 const SubCategoryPage = (props: Props) => {
   const location = useLocation();
-  const id = location.pathname.split('/')[2];
+  const slug = location.pathname.split('/')[2];
   const [category, setCategory] = React.useState<Category | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = React.useState(false);
 
   useEffect(() => {
-    console.log(id, 'id is populated');
-    a.get('/category/' + id).then((res) => {
+    console.log(slug, 'slug is populated');
+    a.get('/category/' + slug).then((res) => {
       setCategory(res.data);
     });
-  }, [id]);
+  }, [slug]);
 
   console.log(category, 'category is populated');
   return (
@@ -245,11 +245,10 @@ const SubCategoryPage = (props: Props) => {
       <main className='max-w-2xl px-4 mx-auto lg:max-w-7xl lg:px-8'>
         <div className='pt-24 pb-10 border-b border-gray-200'>
           <h1 className='text-4xl font-bold tracking-tight text-gray-900'>
-            New Arrivals
+            {category?.title}
           </h1>
           <p className='mt-4 text-base text-gray-500'>
-            Checkout out the latest release of Basic Tees, new and improved with
-            four openings!
+            {category?.description}
           </p>
         </div>
 
@@ -320,9 +319,9 @@ const SubCategoryPage = (props: Props) => {
                   key={product.id}
                   className='relative flex flex-col overflow-hidden bg-white border border-gray-200 rounded-lg group'
                 >
-                  <div className='bg-gray-200 aspect-w-3 aspect-h-4 group-hover:opacity-75 sm:aspect-none sm:h-96'>
+                  <div className='p-4 bg-white aspect-w-3 aspect-h-4 group-hover:opacity-75 sm:aspect-none sm:h-96'>
                     <img
-                      src={productPlaceholder}
+                      src={product.thumbnailImage}
                       alt={product.title}
                       className='object-cover object-center w-full h-full sm:h-full sm:w-full'
                     />
