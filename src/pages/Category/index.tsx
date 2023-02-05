@@ -1,17 +1,19 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { productPlaceholder } from '../../constants';
-import { SubCategory } from '../../interfaces';
+import { Category, SubCategory } from '../../interfaces';
 import a from '../../services';
 
 type Props = {};
 
 const CategoryPage = (props: Props) => {
-  const [subCategory, setSubCategories] = React.useState<SubCategory[]>([]);
+  const [category, setCategory] = React.useState<Category | null>(null);
+  const location = useLocation();
+  const slug = location.pathname.split('/')[2];
   useEffect(() => {
     const fetchData = async () => {
-      const response = await a.get('/subcategory');
-      setSubCategories(response.data);
+      const response = await a.get('/category/' + slug);
+      setCategory(response.data);
     };
     fetchData();
   }, []);
@@ -19,7 +21,7 @@ const CategoryPage = (props: Props) => {
     <div className='bg-white'>
       <div className='max-w-xl px-4 py-16 mx-auto sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8'>
         <h2 className='text-2xl font-bold tracking-tight text-gray-900'>
-          Shop by Collection
+          Shop by {category?.title} Collection
         </h2>
         <p className='mt-4 text-base text-gray-500'>
           Each season, we collaborate with world-class designers to create a
@@ -27,7 +29,7 @@ const CategoryPage = (props: Props) => {
         </p>
 
         <div className='mt-10 space-y-12 lg:grid lg:grid-cols-3 lg:gap-x-8 lg:space-y-8'>
-          {subCategory.map((category) => (
+          {category?.subCategory.map((category) => (
             <Link
               key={category.slug}
               to={`/subcategory/${category.slug}`}

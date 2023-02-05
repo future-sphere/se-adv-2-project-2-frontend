@@ -8,7 +8,7 @@ import React, { Fragment, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { productPlaceholder } from '../../constants';
 import { classNames, formatPrice } from '../../helpers';
-import { Category } from '../../interfaces';
+import { Category, SubCategory } from '../../interfaces';
 import a from '../../services';
 
 type Props = {};
@@ -83,18 +83,19 @@ const products = [
 const SubCategoryPage = (props: Props) => {
   const location = useLocation();
   const slug = location.pathname.split('/')[2];
-  const [category, setCategory] = React.useState<Category | null>(null);
+  const [subcategory, setSubcategory] = React.useState<SubCategory | null>(
+    null
+  );
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = React.useState(false);
 
   useEffect(() => {
-    console.log(slug, 'slug is populated');
-    a.get('/category/' + slug).then((res) => {
-      setCategory(res.data);
+    a.get('/subcategory/' + slug).then((res) => {
+      setSubcategory(res.data);
     });
   }, [slug]);
 
-  console.log(category, 'category is populated');
+  console.log(subcategory, 'subcategory');
   return (
     <>
       {/* Mobile filter dialog */}
@@ -245,11 +246,8 @@ const SubCategoryPage = (props: Props) => {
       <main className='max-w-2xl px-4 mx-auto lg:max-w-7xl lg:px-8'>
         <div className='pt-24 pb-10 border-b border-gray-200'>
           <h1 className='text-4xl font-bold tracking-tight text-gray-900'>
-            {category?.title}
+            {subcategory?.title}
           </h1>
-          <p className='mt-4 text-base text-gray-500'>
-            {category?.description}
-          </p>
         </div>
 
         <div className='pt-12 pb-24 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4'>
@@ -314,7 +312,7 @@ const SubCategoryPage = (props: Props) => {
             </h2>
 
             <div className='grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:gap-x-8 xl:grid-cols-3'>
-              {category?.products.map((product) => (
+              {subcategory?.products.map((product) => (
                 <div
                   key={product.id}
                   className='relative flex flex-col overflow-hidden bg-white border border-gray-200 rounded-lg group'
@@ -328,7 +326,7 @@ const SubCategoryPage = (props: Props) => {
                   </div>
                   <div className='flex flex-col flex-1 p-4 space-y-2'>
                     <h3 className='text-sm font-medium text-gray-900'>
-                      <a href={`/product/${product.id}`}>
+                      <a href={`/product/${product.slug}`}>
                         <span aria-hidden='true' className='absolute inset-0' />
                         {product.title}
                       </a>
