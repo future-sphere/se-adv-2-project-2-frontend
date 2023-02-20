@@ -1,11 +1,16 @@
 import { Dialog, Disclosure, Transition } from '@headlessui/react';
 import {
   ChevronDownIcon,
+  MagnifyingGlassCircleIcon,
+  MagnifyingGlassIcon,
   PlusIcon,
+  QuestionMarkCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import React, { Fragment, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { CLIENT_RENEG_LIMIT } from 'tls';
+import { Empty } from '../../components/Empty';
 import { productPlaceholder } from '../../constants';
 import { classNames, formatPrice } from '../../helpers';
 import { Category, SubCategory } from '../../interfaces';
@@ -16,15 +21,51 @@ type Props = {};
 const breadcrumbs = [{ id: 1, name: 'Men', href: '#' }];
 const filters = [
   {
-    id: 'color',
-    name: 'Color',
+    id: 'price',
+    name: 'Price Range',
     options: [
-      { value: 'white', label: 'White' },
-      { value: 'beige', label: 'Beige' },
-      { value: 'blue', label: 'Blue' },
-      { value: 'brown', label: 'Brown' },
-      { value: 'green', label: 'Green' },
-      { value: 'purple', label: 'Purple' },
+      {
+        value: {
+          min: 0,
+          max: 100,
+        },
+        label: 'Under $100',
+      },
+      {
+        value: {
+          min: 100,
+          max: 150,
+        },
+        label: '$100 to $150',
+      },
+      {
+        value: {
+          min: 150,
+          max: 200,
+        },
+        label: '$150 to $200',
+      },
+      {
+        value: {
+          min: 200,
+          max: 250,
+        },
+        label: '$200 to $250',
+      },
+      {
+        value: {
+          min: 250,
+          max: 300,
+        },
+        label: '$250 to $300',
+      },
+      {
+        value: {
+          min: 350,
+          max: 999999,
+        },
+        label: '$350 and up',
+      },
     ],
   },
   {
@@ -51,34 +92,11 @@ const filters = [
     ],
   },
 ];
-const products = [
-  {
-    id: 1,
-    name: 'Basic Tee 8-Pack',
-    href: '#',
-    price: '$256',
-    description:
-      'Get the full lineup of our Basic Tees. Have a fresh shirt all week, and an extra for laundry day.',
-    options: '8 colors',
-    imageSrc:
-      'https://tailwindui.com/img/ecommerce-images/category-page-02-image-card-01.jpg',
-    imageAlt:
-      'Eight shirts arranged on table in black, olive, grey, blue, white, red, mustard, and green.',
-  },
-  {
-    id: 2,
-    name: 'Basic Tee',
-    href: '#',
-    price: '$32',
-    description:
-      'Look like a visionary CEO and wear the same black t-shirt every day.',
-    options: 'Black',
-    imageSrc:
-      'https://tailwindui.com/img/ecommerce-images/category-page-02-image-card-02.jpg',
-    imageAlt: 'Front of plain black t-shirt.',
-  },
-  // More products...
-];
+
+interface Range {
+  min: number;
+  max: number;
+}
 
 const SubCategoryPage = (props: Props) => {
   const location = useLocation();
@@ -88,14 +106,47 @@ const SubCategoryPage = (props: Props) => {
   );
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = React.useState(false);
+  const [searchInput, setSearchInput] = React.useState('');
+  const [filtersMap, setFiltersMap] = React.useState<{
+    [key: string]: string;
+  }>({});
+  const [priceFilters, setPriceFilters] = React.useState<Range[]>([]);
+
+  const handlePriceFilterChange = (
+    filterSection: string,
+    filterValue: Range,
+    checked: boolean
+  ) => {
+    if (filterSection === 'price') {
+      if (checked) {
+        setPriceFilters([...priceFilters, filterValue]);
+      } else {
+        const nextPriceFilters = priceFilters.filter(
+          (filter) =>
+            filter.min !== filterValue.min && filter.max !== filterValue.max
+        );
+        setPriceFilters(nextPriceFilters);
+      }
+    }
+  };
+
+  const clearFilter = (sectionId: string) => {
+    if (sectionId === 'price') {
+      setPriceFilters([]);
+    }
+  };
 
   useEffect(() => {
-    a.get('/subcategory/' + slug).then((res) => {
+    a.get('/subcategory/' + slug, {
+      params: {
+        search: searchInput,
+        priceFilters,
+      },
+    }).then((res) => {
       setSubcategory(res.data);
     });
-  }, [slug]);
+  }, [slug, searchInput, priceFilters]);
 
-  console.log(subcategory, 'subcategory');
   return (
     <>
       {/* Mobile filter dialog */}
@@ -170,13 +221,12 @@ const SubCategoryPage = (props: Props) => {
                             <div className='space-y-6'>
                               {section.options.map((option, optionIdx) => (
                                 <div
-                                  key={option.value}
+                                  key={optionIdx}
                                   className='flex items-center'
                                 >
                                   <input
                                     id={`${section.id}-${optionIdx}-mobile`}
                                     name={`${section.id}[]`}
-                                    defaultValue={option.value}
                                     type='checkbox'
                                     className='w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500'
                                   />
@@ -244,10 +294,27 @@ const SubCategoryPage = (props: Props) => {
       </div>
 
       <main className='max-w-2xl px-4 mx-auto lg:max-w-7xl lg:px-8'>
-        <div className='pt-24 pb-10 border-b border-gray-200'>
+        <div className='flex justify-between pt-24 pb-10 border-b border-gray-200'>
           <h1 className='text-4xl font-bold tracking-tight text-gray-900'>
             {subcategory?.title}
           </h1>
+          <div className='w-64'>
+            <div className='relative mt-1 rounded-md shadow-sm'>
+              <input
+                type='text'
+                className='block w-full pr-10 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                placeholder='Search for the product title'
+                onChange={(e) => setSearchInput(e.target.value)}
+                value={searchInput}
+              />
+              <div className='absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none'>
+                <MagnifyingGlassIcon
+                  className='w-5 h-5 text-gray-400'
+                  aria-hidden='true'
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className='pt-12 pb-24 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4'>
@@ -279,11 +346,22 @@ const SubCategoryPage = (props: Props) => {
                       </legend>
                       <div className='pt-6 space-y-3'>
                         {section.options.map((option, optionIdx) => (
-                          <div key={option.value} className='flex items-center'>
+                          <div key={optionIdx} className='flex items-center'>
                             <input
                               id={`${section.id}-${optionIdx}`}
                               name={`${section.id}[]`}
-                              defaultValue={option.value}
+                              onChange={(e) => {
+                                if (section.id === 'price') {
+                                  handlePriceFilterChange(
+                                    section.id,
+                                    option.value as Range,
+                                    e.target.checked
+                                  );
+                                }
+                              }}
+                              // checked={filtersMap[section.id].includes(
+                              //   option.value
+                              // )}
                               type='checkbox'
                               className='w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500'
                             />
@@ -295,6 +373,9 @@ const SubCategoryPage = (props: Props) => {
                             </label>
                           </div>
                         ))}
+                        <button onClick={() => clearFilter(section.id)}>
+                          Clear Filters
+                        </button>
                       </div>
                     </fieldset>
                   </div>
@@ -346,6 +427,17 @@ const SubCategoryPage = (props: Props) => {
                 </div>
               ))}
             </div>
+            {!subcategory?.products.length && (
+              <div className='flex justify-center w-full py-12'>
+                <Empty
+                  title='No product found'
+                  description='Try entering another search term for better result'
+                  icon={
+                    <MagnifyingGlassIcon className='w-12 h-12 text-gray-400' />
+                  }
+                />
+              </div>
+            )}
           </section>
         </div>
       </main>
