@@ -10,6 +10,7 @@ import {
 import React, { Fragment, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { CLIENT_RENEG_LIMIT } from 'tls';
+import { DropdownMenu } from '../../components/DropdownMenu';
 import { Empty } from '../../components/Empty';
 import { productPlaceholder } from '../../constants';
 import { classNames, formatPrice } from '../../helpers';
@@ -98,6 +99,11 @@ interface Range {
   max: number;
 }
 
+interface Sorting {
+  field: string;
+  order: 'asc' | 'desc';
+}
+
 const SubCategoryPage = (props: Props) => {
   const location = useLocation();
   const slug = location.pathname.split('/')[2];
@@ -111,6 +117,15 @@ const SubCategoryPage = (props: Props) => {
     [key: string]: string;
   }>({});
   const [priceFilters, setPriceFilters] = React.useState<Range[]>([]);
+  const [sorting, setSorting] = React.useState<Sorting[]>([]);
+
+  const handleSortingToggle = (field: string, order: 'asc' | 'desc') => {
+    const nextSorting = sorting.filter((sort) => sort.field !== field);
+    nextSorting.push({ field, order });
+    setSorting(nextSorting);
+  };
+
+  console.log(sorting);
 
   const handlePriceFilterChange = (
     filterSection: string,
@@ -141,11 +156,12 @@ const SubCategoryPage = (props: Props) => {
       params: {
         search: searchInput,
         priceFilters,
+        sorting,
       },
     }).then((res) => {
       setSubcategory(res.data);
     });
-  }, [slug, searchInput, priceFilters]);
+  }, [slug, searchInput, priceFilters, sorting]);
 
   return (
     <>
@@ -298,8 +314,29 @@ const SubCategoryPage = (props: Props) => {
           <h1 className='text-4xl font-bold tracking-tight text-gray-900'>
             {subcategory?.title}
           </h1>
-          <div className='w-64'>
-            <div className='relative mt-1 rounded-md shadow-sm'>
+          <div className='flex items-center gap-4 w-92'>
+            <DropdownMenu
+              onSelect={handleSortingToggle}
+              menuItems={[
+                {
+                  subMenuItems: [
+                    {
+                      icon: <MagnifyingGlassIcon />,
+                      label: 'Price: low to high',
+                      field: 'price',
+                      order: 'asc',
+                    },
+                    {
+                      icon: <MagnifyingGlassIcon />,
+                      label: 'Price: high to low',
+                      field: 'price',
+                      order: 'desc',
+                    },
+                  ],
+                },
+              ]}
+            />
+            <div className='relative rounded-md shadow-sm w-72'>
               <input
                 type='text'
                 className='block w-full pr-10 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
@@ -373,7 +410,10 @@ const SubCategoryPage = (props: Props) => {
                             </label>
                           </div>
                         ))}
-                        <button onClick={() => clearFilter(section.id)}>
+                        <button
+                          className='block px-4 py-2 mt-4 text-sm text-gray-600 border-2 border-gray-200 rounded-lg hover:border-gray-300'
+                          onClick={() => clearFilter(section.id)}
+                        >
                           Clear Filters
                         </button>
                       </div>
