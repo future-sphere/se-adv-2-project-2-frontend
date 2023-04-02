@@ -9,6 +9,10 @@ import Layout from './components/Layout';
 import ProductPage from './pages/Product';
 import SubCategoryPage from './pages/Subcategory';
 import CategoryPage from './pages/Category';
+import { SigninPage } from './pages/Signin';
+import { SignupPage } from './pages/Signup';
+import ProfilePage from './pages/Profile';
+import OrderDetailPage from './pages/Order';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -25,6 +29,50 @@ root.render(
             {
               index: true,
               element: <LandingPage />,
+            },
+          ],
+        },
+        {
+          path: '/order',
+          element: <Layout />,
+          errorElement: <h1>404</h1>,
+          children: [
+            {
+              path: ':id',
+              element: <OrderDetailPage />,
+            },
+          ],
+        },
+        {
+          path: '/profile',
+          element: <Layout />,
+          errorElement: <h1>404</h1>,
+          children: [
+            {
+              index: true,
+              element: <ProfilePage />,
+            },
+          ],
+        },
+        {
+          path: '/signin',
+          element: <Layout />,
+          errorElement: <h1>404</h1>,
+          children: [
+            {
+              index: true,
+              element: <SigninPage />,
+            },
+          ],
+        },
+        {
+          path: '/signup',
+          element: <Layout />,
+          errorElement: <h1>404</h1>,
+          children: [
+            {
+              index: true,
+              element: <SignupPage />,
             },
           ],
         },

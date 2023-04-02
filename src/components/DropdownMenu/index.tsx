@@ -3,6 +3,7 @@ import { Menu, Transition } from '@headlessui/react';
 import {
   ArchiveBoxIcon,
   ArrowRightCircleIcon,
+  ArrowTrendingDownIcon,
   ChevronDownIcon,
   DocumentDuplicateIcon,
   HeartIcon,
@@ -11,6 +12,8 @@ import {
   UserPlusIcon,
 } from '@heroicons/react/20/solid';
 import { classNames } from '../../helpers';
+import { CheckIcon } from '@heroicons/react/24/solid';
+import { Sorting } from '../../pages/Subcategory';
 
 interface DropdownMenuItems {
   subMenuItems: {
@@ -24,11 +27,16 @@ interface DropdownMenuItems {
 interface DropdownMenuProps {
   menuItems: DropdownMenuItems[];
   onSelect: (field: string, order: 'asc' | 'desc') => void;
+  value: Sorting[];
 }
 
-export const DropdownMenu = ({ menuItems, onSelect }: DropdownMenuProps) => {
+export const DropdownMenu = ({
+  menuItems,
+  onSelect,
+  value,
+}: DropdownMenuProps) => {
   return (
-    <Menu as='div' className='relative inline-block text-left'>
+    <Menu as='div' className='relative z-10 inline-block text-left'>
       <div>
         <Menu.Button className='inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100'>
           Options
@@ -58,14 +66,17 @@ export const DropdownMenu = ({ menuItems, onSelect }: DropdownMenuProps) => {
                       onClick={() => onSelect(subItem.field, subItem.order)}
                       className={classNames(
                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        'group flex items-center px-4 py-2 text-sm'
+                        'group flex items-center px-4 py-2 text-sm w-full justify-between'
                       )}
                     >
-                      <PencilSquareIcon
-                        className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500'
-                        aria-hidden='true'
-                      />
-                      {subItem.label}
+                      <div className='flex'>
+                        {subItem.icon}
+                        {subItem.label}
+                      </div>
+                      {value.find(
+                        (v) =>
+                          v.field === subItem.field && v.order === subItem.order
+                      ) && <CheckIcon className='w-5 h-5 text-green-500' />}
                     </button>
                   )}
                 </Menu.Item>
@@ -73,135 +84,6 @@ export const DropdownMenu = ({ menuItems, onSelect }: DropdownMenuProps) => {
             </div>
           </Menu.Items>
         ))}
-        {/* <Menu.Items className='absolute right-0 z-10 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-          <div className='py-1'>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href='#'
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'group flex items-center px-4 py-2 text-sm'
-                  )}
-                >
-                  <PencilSquareIcon
-                    className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500'
-                    aria-hidden='true'
-                  />
-                  Edit
-                </a>
-              )}
-            </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href='#'
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'group flex items-center px-4 py-2 text-sm'
-                  )}
-                >
-                  <DocumentDuplicateIcon
-                    className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500'
-                    aria-hidden='true'
-                  />
-                  Duplicate
-                </a>
-              )}
-            </Menu.Item>
-          </div>
-          <div className='py-1'>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href='#'
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'group flex items-center px-4 py-2 text-sm'
-                  )}
-                >
-                  <ArchiveBoxIcon
-                    className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500'
-                    aria-hidden='true'
-                  />
-                  Archive
-                </a>
-              )}
-            </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href='#'
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'group flex items-center px-4 py-2 text-sm'
-                  )}
-                >
-                  <ArrowRightCircleIcon
-                    className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500'
-                    aria-hidden='true'
-                  />
-                  Move
-                </a>
-              )}
-            </Menu.Item>
-          </div>
-          <div className='py-1'>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href='#'
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'group flex items-center px-4 py-2 text-sm'
-                  )}
-                >
-                  <UserPlusIcon
-                    className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500'
-                    aria-hidden='true'
-                  />
-                  Share
-                </a>
-              )}
-            </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href='#'
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'group flex items-center px-4 py-2 text-sm'
-                  )}
-                >
-                  <HeartIcon
-                    className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500'
-                    aria-hidden='true'
-                  />
-                  Add to favorites
-                </a>
-              )}
-            </Menu.Item>
-          </div>
-          <div className='py-1'>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href='#'
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'group flex items-center px-4 py-2 text-sm'
-                  )}
-                >
-                  <TrashIcon
-                    className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500'
-                    aria-hidden='true'
-                  />
-                  Delete
-                </a>
-              )}
-            </Menu.Item>
-          </div>
-        </Menu.Items> */}
       </Transition>
     </Menu>
   );

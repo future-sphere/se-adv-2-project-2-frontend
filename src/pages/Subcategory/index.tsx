@@ -7,6 +7,11 @@ import {
   QuestionMarkCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import {
+  ArrowTrendingDownIcon,
+  ArrowTrendingUpIcon,
+  LanguageIcon,
+} from '@heroicons/react/24/solid';
 import React, { Fragment, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { CLIENT_RENEG_LIMIT } from 'tls';
@@ -69,29 +74,6 @@ const filters = [
       },
     ],
   },
-  {
-    id: 'category',
-    name: 'Category',
-    options: [
-      { value: 'new-arrivals', label: 'All New Arrivals' },
-      { value: 'tees', label: 'Tees' },
-      { value: 'crewnecks', label: 'Crewnecks' },
-      { value: 'sweatshirts', label: 'Sweatshirts' },
-      { value: 'pants-shorts', label: 'Pants & Shorts' },
-    ],
-  },
-  {
-    id: 'sizes',
-    name: 'Sizes',
-    options: [
-      { value: 'xs', label: 'XS' },
-      { value: 's', label: 'S' },
-      { value: 'm', label: 'M' },
-      { value: 'l', label: 'L' },
-      { value: 'xl', label: 'XL' },
-      { value: '2xl', label: '2XL' },
-    ],
-  },
 ];
 
 interface Range {
@@ -99,7 +81,7 @@ interface Range {
   max: number;
 }
 
-interface Sorting {
+export interface Sorting {
   field: string;
   order: 'asc' | 'desc';
 }
@@ -317,19 +299,40 @@ const SubCategoryPage = (props: Props) => {
           <div className='flex items-center gap-4 w-92'>
             <DropdownMenu
               onSelect={handleSortingToggle}
+              value={sorting}
               menuItems={[
                 {
                   subMenuItems: [
                     {
-                      icon: <MagnifyingGlassIcon />,
+                      icon: (
+                        <ArrowTrendingUpIcon className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500' />
+                      ),
                       label: 'Price: low to high',
                       field: 'price',
                       order: 'asc',
                     },
                     {
-                      icon: <MagnifyingGlassIcon />,
+                      icon: (
+                        <ArrowTrendingDownIcon className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500' />
+                      ),
                       label: 'Price: high to low',
                       field: 'price',
+                      order: 'desc',
+                    },
+                    {
+                      icon: (
+                        <LanguageIcon className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500' />
+                      ),
+                      label: 'Title: A - Z',
+                      field: 'title',
+                      order: 'asc',
+                    },
+                    {
+                      icon: (
+                        <LanguageIcon className='w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500' />
+                      ),
+                      label: 'Title: Z - A',
+                      field: 'title',
                       order: 'desc',
                     },
                   ],

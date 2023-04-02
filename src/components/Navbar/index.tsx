@@ -217,20 +217,20 @@ const Navbar = ({ categories }: Props) => {
 
                 <div className='px-4 py-6 space-y-6 border-t border-gray-200'>
                   <div className='flow-root'>
-                    <a
-                      href='#'
+                    <Link
+                      to='/signup'
                       className='block p-2 -m-2 font-medium text-gray-900'
                     >
                       Create an account
-                    </a>
+                    </Link>
                   </div>
                   <div className='flow-root'>
-                    <a
-                      href='#'
+                    <Link
+                      to='/signin'
                       className='block p-2 -m-2 font-medium text-gray-900'
                     >
                       Sign in
-                    </a>
+                    </Link>
                   </div>
                 </div>
 
@@ -299,18 +299,18 @@ const Navbar = ({ categories }: Props) => {
               </form>
 
               <div className='flex items-center space-x-6'>
-                <a
-                  href='#'
+                <Link
+                  to='/signin'
                   className='text-sm font-medium text-white hover:text-gray-100'
                 >
                   Sign in
-                </a>
-                <a
-                  href='#'
+                </Link>
+                <Link
+                  to='/signup'
                   className='text-sm font-medium text-white hover:text-gray-100'
                 >
                   Create an account
-                </a>
+                </Link>
               </div>
             </div>
           </div>

@@ -14,6 +14,14 @@ export interface Product {
   highlightDescription: string;
 }
 
+export interface Order {
+  id: number;
+  student: Student;
+  studentId: number;
+  products: Product[];
+  createdAt: Date;
+}
+
 export interface ProductHighlight {
   id: number;
   title: string;
