@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react';
 import { Fragment, useState } from 'react';
 import {
@@ -10,14 +10,14 @@ import {
 } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { classNames } from '../../helpers';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Category } from '../../interfaces';
+import a from '../../services';
 
 type Props = {
   categories: Category[];
 };
 
-const currencies = ['CAD', 'USD', 'AUD', 'EUR', 'GBP'];
 const navigation = {
   categories: [
     {
@@ -102,6 +102,55 @@ const navigation = {
 
 const Navbar = ({ categories }: Props) => {
   const [open, setOpen] = useState(false);
+  const [userId, setUserId] = React.useState<number>(0);
+  const navigate = useNavigate();
+  const [cart, setCart] = React.useState<any>(null);
+
+  const getCart = async () => {
+    const cart = await a.get(`/cart/${userId}/student`);
+    if (cart.data) {
+      setCart(cart.data);
+    }
+  };
+
+  const checkAuth = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return navigate('/signin');
+    }
+
+    try {
+      const response = await a.get('/auth/check', {
+        params: {
+          token,
+        },
+      });
+
+      if (!response.data.user.id) {
+        return navigate('/signin');
+      }
+      setUserId(response.data.user.id);
+      localStorage.setItem('currentUserId', response.data.user.id);
+    } catch (error: any) {
+      if (error.response.status === 401) {
+        return navigate('/signin');
+      }
+    }
+  };
+
+  console.log(cart);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
+    if (userId) {
+      getCart();
+    }
+  }, [userId]);
+
+  console.log(userId, 'user is logged in');
 
   return (
     <>
@@ -214,53 +263,45 @@ const Navbar = ({ categories }: Props) => {
                     </div>
                   ))}
                 </div>
-
-                <div className='px-4 py-6 space-y-6 border-t border-gray-200'>
-                  <div className='flow-root'>
-                    <Link
-                      to='/signup'
-                      className='block p-2 -m-2 font-medium text-gray-900'
-                    >
-                      Create an account
-                    </Link>
-                  </div>
-                  <div className='flow-root'>
-                    <Link
-                      to='/signin'
-                      className='block p-2 -m-2 font-medium text-gray-900'
-                    >
-                      Sign in
-                    </Link>
-                  </div>
-                </div>
-
-                <div className='px-4 py-6 space-y-6 border-t border-gray-200'>
-                  {/* Currency selector */}
-                  <form>
-                    <div className='inline-block'>
-                      <label htmlFor='mobile-currency' className='sr-only'>
-                        Currency
-                      </label>
-                      <div className='relative -ml-2 border-transparent rounded-md group focus-within:ring-2 focus-within:ring-white'>
-                        <select
-                          id='mobile-currency'
-                          name='currency'
-                          className='flex items-center rounded-md border-transparent bg-none py-0.5 pl-2 pr-5 text-sm font-medium text-gray-700 focus:border-transparent focus:outline-none focus:ring-0 group-hover:text-gray-800'
-                        >
-                          {currencies.map((currency) => (
-                            <option key={currency}>{currency}</option>
-                          ))}
-                        </select>
-                        <div className='absolute inset-y-0 right-0 flex items-center pointer-events-none'>
-                          <ChevronDownIcon
-                            className='w-5 h-5 text-gray-500'
-                            aria-hidden='true'
-                          />
-                        </div>
-                      </div>
+                {userId ? (
+                  <div className='px-4 py-6 space-y-6 border-t border-gray-200'>
+                    <div className='flow-root'>
+                      <Link
+                        to='/profile'
+                        className='block p-2 -m-2 font-medium text-gray-900'
+                      >
+                        Profile
+                      </Link>
                     </div>
-                  </form>
-                </div>
+                    <div className='flow-root'>
+                      <Link
+                        to='/logout'
+                        className='block p-2 -m-2 font-medium text-gray-900'
+                      >
+                        Log out
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div className='px-4 py-6 space-y-6 border-t border-gray-200'>
+                    <div className='flow-root'>
+                      <Link
+                        to='/signup'
+                        className='block p-2 -m-2 font-medium text-gray-900'
+                      >
+                        Create an account
+                      </Link>
+                    </div>
+                    <div className='flow-root'>
+                      <Link
+                        to='/signin'
+                        className='block p-2 -m-2 font-medium text-gray-900'
+                      >
+                        Sign in
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>
@@ -272,46 +313,37 @@ const Navbar = ({ categories }: Props) => {
           {/* Top navigation */}
           <div className='bg-gray-900'>
             <div className='flex items-center justify-between h-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8'>
-              {/* Currency selector */}
-              <form>
-                <div>
-                  <label htmlFor='desktop-currency' className='sr-only'>
-                    Currency
-                  </label>
-                  <div className='relative -ml-2 bg-gray-900 border-transparent rounded-md group focus-within:ring-2 focus-within:ring-white'>
-                    <select
-                      id='desktop-currency'
-                      name='currency'
-                      className='flex items-center rounded-md border-transparent bg-gray-900 bg-none py-0.5 pl-2 pr-5 text-sm font-medium text-white focus:border-transparent focus:outline-none focus:ring-0 group-hover:text-gray-100'
-                    >
-                      {currencies.map((currency) => (
-                        <option key={currency}>{currency}</option>
-                      ))}
-                    </select>
-                    <div className='absolute inset-y-0 right-0 flex items-center pointer-events-none'>
-                      <ChevronDownIcon
-                        className='w-5 h-5 text-gray-300'
-                        aria-hidden='true'
-                      />
-                    </div>
-                  </div>
+              {userId ? (
+                <div className='flex items-center space-x-6'>
+                  <Link
+                    to='/profile'
+                    className='text-sm font-medium text-white hover:text-gray-100'
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    to='/logout'
+                    className='text-sm font-medium text-white hover:text-gray-100'
+                  >
+                    Log out
+                  </Link>
                 </div>
-              </form>
-
-              <div className='flex items-center space-x-6'>
-                <Link
-                  to='/signin'
-                  className='text-sm font-medium text-white hover:text-gray-100'
-                >
-                  Sign in
-                </Link>
-                <Link
-                  to='/signup'
-                  className='text-sm font-medium text-white hover:text-gray-100'
-                >
-                  Create an account
-                </Link>
-              </div>
+              ) : (
+                <div className='flex items-center space-x-6'>
+                  <Link
+                    to='/signin'
+                    className='text-sm font-medium text-white hover:text-gray-100'
+                  >
+                    Sign in
+                  </Link>
+                  <Link
+                    to='/signup'
+                    className='text-sm font-medium text-white hover:text-gray-100'
+                  >
+                    Create an account
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 
@@ -512,7 +544,7 @@ const Navbar = ({ categories }: Props) => {
                           aria-hidden='true'
                         />
                         <span className='ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800'>
-                          0
+                          {cart ? cart.cartItems.length : 0}
                         </span>
                         <span className='sr-only'>items in cart, view bag</span>
                       </a>

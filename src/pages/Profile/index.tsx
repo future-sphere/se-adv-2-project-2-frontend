@@ -14,8 +14,9 @@ type Props = {};
 
 const ProfilePage = (props: Props) => {
   const [orders, setOrders] = React.useState<Order[]>([]);
-  const [userId, setUserId] = React.useState<number>(0);
-  const navigate = useNavigate();
+
+  const userId = localStorage.getItem('currentUserId');
+
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
@@ -42,6 +43,14 @@ const ProfilePage = (props: Props) => {
     };
 
     checkAuth();
+    const fetchData = async () => {
+      const response = await a.get('/orders/student/' + userId);
+      if (response.data) {
+        setOrders(response.data);
+      }
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {
