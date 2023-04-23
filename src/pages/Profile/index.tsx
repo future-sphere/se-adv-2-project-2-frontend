@@ -12,46 +12,11 @@ import a from '../../services';
 
 type Props = {};
 
-const orders = [
-  {
-    number: 'WU88191111',
-    href: '#',
-    invoiceHref: '#',
-    createdDate: 'Jul 6, 2021',
-    createdDatetime: '2021-07-06',
-    deliveredDate: 'July 12, 2021',
-    deliveredDatetime: '2021-07-12',
-    total: '$160.00',
-    products: [
-      {
-        id: 1,
-        name: 'Micro Backpack',
-        description:
-          'Are you a minimalist looking for a compact carry option? The Micro Backpack is the perfect size for your essential everyday carry items. Wear it like a backpack or carry it like a satchel for all-day use.',
-        href: '#',
-        price: '$70.00',
-        imageSrc:
-          'https://tailwindui.com/img/ecommerce-images/order-history-page-03-product-01.jpg',
-        imageAlt:
-          'Moss green canvas compact backpack with double top zipper, zipper front pouch, and matching carry handle and backpack straps.',
-      },
-      // More products...
-    ],
-  },
-  // More orders...
-];
-
 const ProfilePage = (props: Props) => {
   const [orders, setOrders] = React.useState<Order[]>([]);
   const [userId, setUserId] = React.useState<number>(0);
   const navigate = useNavigate();
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await a.get('/orders/student/' + userId);
-      if (response.data) {
-        setOrders(response.data);
-      }
-    };
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -65,10 +30,10 @@ const ProfilePage = (props: Props) => {
           },
         });
 
-        if (!response.data.id) {
+        if (!response.data.user.id) {
           return navigate('/signin');
         }
-        setUserId(response.data.id);
+        setUserId(response.data.user.id);
       } catch (error: any) {
         if (error.response.status === 401) {
           return navigate('/signin');
@@ -76,9 +41,19 @@ const ProfilePage = (props: Props) => {
       }
     };
 
-    fetchData();
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await a.get('/orders/student/' + userId);
+      if (response.data) {
+        setOrders(response.data);
+      }
+    };
+
+    fetchData();
+  }, [userId]);
 
   return (
     <main className='py-24'>
@@ -193,12 +168,12 @@ const ProfilePage = (props: Props) => {
                     </Menu>
 
                     <div className='hidden lg:col-span-2 lg:flex lg:items-center lg:justify-end lg:space-x-4'>
-                      <a
-                        href='#'
+                      <Link
+                        to={`/order/${order.id}`}
                         className='flex items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
                       >
                         <span>View Order</span>
-                      </a>
+                      </Link>
                     </div>
                   </div>
 
@@ -247,7 +222,7 @@ const ProfilePage = (props: Props) => {
                           <div className='flex items-center pt-4 mt-6 space-x-4 text-sm font-medium border-t border-gray-200 divide-x divide-gray-200 sm:mt-0 sm:ml-4 sm:border-none sm:pt-0'>
                             <div className='flex justify-center flex-1'>
                               <Link
-                                to={`/product/${product.id}`}
+                                to={`/product/${product.slug}`}
                                 className='text-indigo-600 whitespace-nowrap hover:text-indigo-500'
                               >
                                 View product
