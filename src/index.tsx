@@ -13,12 +13,16 @@ import { SigninPage } from './pages/Signin';
 import { SignupPage } from './pages/Signup';
 import ProfilePage from './pages/Profile';
 import OrderDetailPage from './pages/Order';
+import { Notification } from '@bctc/components';
+import CartPage from './pages/Cart';
+import { CheckoutPage } from './pages/Checkout';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
+    <Notification />
     <RouterProvider
       router={createBrowserRouter([
         {
@@ -29,6 +33,28 @@ root.render(
             {
               index: true,
               element: <LandingPage />,
+            },
+          ],
+        },
+        {
+          path: '/cart',
+          element: <Layout />,
+          errorElement: <h1>404</h1>,
+          children: [
+            {
+              index: true,
+              element: <CartPage />,
+            },
+          ],
+        },
+        {
+          path: '/checkout',
+          element: <Layout />,
+          errorElement: <h1>404</h1>,
+          children: [
+            {
+              index: true,
+              element: <CheckoutPage />,
             },
           ],
         },

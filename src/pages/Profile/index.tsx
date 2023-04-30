@@ -5,7 +5,7 @@ import {
 } from '@heroicons/react/24/outline';
 import dayjs from 'dayjs';
 import React, { Fragment, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { classNames, formatPrice } from '../../helpers';
 import { Order } from '../../interfaces';
 import a from '../../services';
@@ -14,35 +14,9 @@ type Props = {};
 
 const ProfilePage = (props: Props) => {
   const [orders, setOrders] = React.useState<Order[]>([]);
-
   const userId = localStorage.getItem('currentUserId');
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        return navigate('/signin');
-      }
-
-      try {
-        const response = await a.get('/auth/check', {
-          params: {
-            token,
-          },
-        });
-
-        if (!response.data.user.id) {
-          return navigate('/signin');
-        }
-        setUserId(response.data.user.id);
-      } catch (error: any) {
-        if (error.response.status === 401) {
-          return navigate('/signin');
-        }
-      }
-    };
-
-    checkAuth();
     const fetchData = async () => {
       const response = await a.get('/orders/student/' + userId);
       if (response.data) {

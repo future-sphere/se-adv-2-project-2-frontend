@@ -1079,6 +1079,21 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@bctc/components@^3.7.5":
+  version "3.7.5"
+  resolved "https://registry.npmjs.org/@bctc/components/-/components-3.7.5.tgz"
+  integrity sha512-7W+QWdxX4+5e0mtJEhW8ZgYKevlyt7NcVtm+iMi9DlBbA7lO76w91qnr/zUPakNUONuM/dnsPX/+iucP5O5HlA==
+  dependencies:
+    "@headlessui/react" "^1.7.3"
+    "@heroicons/react" "^2.0.12"
+    "@hookstate/core" "3.0.13"
+    "@mantine/hooks" "^5.5.5"
+    body-scroll-lock "^4.0.0-beta.0"
+    classnames "^2.3.1"
+    compressorjs "^1.1.1"
+    gifsicle-wasm-browser "^1.5.16"
+    tslib "^2.4.0"
+
 "@csstools/normalize.css@*":
   version "12.0.0"
   resolved "https://registry.npmjs.org/@csstools/normalize.css/-/normalize.css-12.0.0.tgz"
@@ -1214,6 +1229,16 @@
   version "2.0.12"
   resolved "https://registry.npmjs.org/@heroicons/react/-/react-2.0.12.tgz"
   integrity sha512-FZxKh3i9aKIDxyALTgIpSF2t6V6/eZfF5mRu41QlwkX3Oxzecdm1u6dpft6PQGxIBwO7TKYWaMAYYL8mp/EaOg==
+
+"@hookstate/core@3.0.13":
+  version "3.0.13"
+  resolved "https://registry.npmjs.org/@hookstate/core/-/core-3.0.13.tgz"
+  integrity sha512-dzx6Rz1M5/c/F1zPEspnONMUvkJD1BzepuuGkqoh+KDNhgWrklGW9OVQAuK+DZFyamCTb3/1GW2Vu4IDhXMexA==
+
+"@hookstate/core@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@hookstate/core/-/core-4.0.1.tgz#6744380e96ce13fe3488c926c1cbae93bbea0ff6"
+  integrity sha512-Uh2D8Z0z/pqOJ7t+SfC+2sj13JQcB4yFhtL+T1choCaBxTSlgOS/CKRBohgJ4cjTKoxOmTT8uSQysu3gUjX+Gw==
 
 "@humanwhocodes/config-array@^0.11.6":
   version "0.11.7"
@@ -1512,6 +1537,11 @@
   version "2.0.4"
   resolved "https://registry.npmjs.org/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
+
+"@mantine/hooks@^5.5.5":
+  version "5.10.5"
+  resolved "https://registry.npmjs.org/@mantine/hooks/-/hooks-5.10.5.tgz"
+  integrity sha512-hFQp71QZDfivPzfIUOQZfMKLiOL/Cn2EnzacRlbUr55myteTfzYN8YMt+nzniE/6c4IRopFHEAdbKEtfyQc6kg==
 
 "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1":
   version "5.1.1-v1"
@@ -2818,6 +2848,11 @@ bluebird@^3.5.5:
   resolved "https://registry.npmjs.org/bluebird/-/bluebird-3.7.2.tgz"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
 
+blueimp-canvas-to-blob@^3.29.0:
+  version "3.29.0"
+  resolved "https://registry.npmjs.org/blueimp-canvas-to-blob/-/blueimp-canvas-to-blob-3.29.0.tgz"
+  integrity sha512-0pcSSGxC0QxT+yVkivxIqW0Y4VlO2XSDPofBAqoJ1qJxgH9eiUDLv50Rixij2cDuEfx4M6DpD9UGZpRhT5Q8qg==
+
 body-parser@1.20.1:
   version "1.20.1"
   resolved "https://registry.npmjs.org/body-parser/-/body-parser-1.20.1.tgz"
@@ -2835,6 +2870,11 @@ body-parser@1.20.1:
     raw-body "2.5.1"
     type-is "~1.6.18"
     unpipe "1.0.0"
+
+body-scroll-lock@^4.0.0-beta.0:
+  version "4.0.0-beta.0"
+  resolved "https://registry.npmjs.org/body-scroll-lock/-/body-scroll-lock-4.0.0-beta.0.tgz"
+  integrity sha512-a7tP5+0Mw3YlUJcGAKUqIBkYYGlYxk2fnCasq/FUph1hadxlTRjF+gAcZksxANnaMnALjxEddmSi/H3OR8ugcQ==
 
 bonjour-service@^1.0.11:
   version "1.0.14"
@@ -3041,6 +3081,11 @@ cjs-module-lexer@^1.0.0:
   resolved "https://registry.npmjs.org/cjs-module-lexer/-/cjs-module-lexer-1.2.2.tgz"
   integrity sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==
 
+classnames@^2.3.1:
+  version "2.3.2"
+  resolved "https://registry.npmjs.org/classnames/-/classnames-2.3.2.tgz"
+  integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
+
 clean-css@^5.2.2:
   version "5.3.1"
   resolved "https://registry.npmjs.org/clean-css/-/clean-css-5.3.1.tgz"
@@ -3166,6 +3211,14 @@ compression@^1.7.4:
     on-headers "~1.0.2"
     safe-buffer "5.1.2"
     vary "~1.1.2"
+
+compressorjs@^1.1.1:
+  version "1.2.1"
+  resolved "https://registry.npmjs.org/compressorjs/-/compressorjs-1.2.1.tgz"
+  integrity sha512-+geIjeRnPhQ+LLvvA7wxBQE5ddeLU7pJ3FsKFWirDw6veY3s9iLxAQEw7lXGHnhCJvBujEQWuNnGzZcvCvdkLQ==
+  dependencies:
+    blueimp-canvas-to-blob "^3.29.0"
+    is-blob "^2.1.0"
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -4575,6 +4628,11 @@ get-symbol-description@^1.0.0:
     call-bind "^1.0.2"
     get-intrinsic "^1.1.1"
 
+gifsicle-wasm-browser@^1.5.16:
+  version "1.5.16"
+  resolved "https://registry.npmjs.org/gifsicle-wasm-browser/-/gifsicle-wasm-browser-1.5.16.tgz"
+  integrity sha512-Ewcx93IlZwVZjqvFxFdE4uIc/q01y598BXpjzt5vAOvNFKcl/nVp4WZwmtINAtkXKr5RP1HJ5QRdnTqET3fLkQ==
+
 glob-parent@^5.1.2, glob-parent@~5.1.2:
   version "5.1.2"
   resolved "https://registry.npmjs.org/glob-parent/-/glob-parent-5.1.2.tgz"
@@ -4993,6 +5051,11 @@ is-binary-path@~2.1.0:
   integrity sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==
   dependencies:
     binary-extensions "^2.0.0"
+
+is-blob@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/is-blob/-/is-blob-2.1.0.tgz"
+  integrity sha512-SZ/fTft5eUhQM6oF/ZaASFDEdbFVe89Imltn9uZr03wdKMcWNVYSMjQPFtg05QuNkt5l5c135ElvXEQG0rk4tw==
 
 is-boolean-object@^1.1.0:
   version "1.1.2"
@@ -8413,7 +8476,7 @@ tslib@^1.8.1:
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.3:
+tslib@^2.0.3, tslib@^2.4.0:
   version "2.4.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==

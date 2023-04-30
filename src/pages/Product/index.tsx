@@ -13,6 +13,9 @@ import { productPlaceholder } from '../../constants';
 import { Product } from '../../interfaces';
 import a from '../../services';
 import { Dialog, RadioGroup, Transition } from '@headlessui/react';
+import { notify, error } from '@bctc/components';
+import { useHookstate } from '@hookstate/core';
+import { globalCartItemCount } from '../../states';
 
 type Props = {};
 
@@ -55,6 +58,7 @@ const ProductPage = (props: Props) => {
   const [review, setReview] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedRating, setSelectedRating] = useState(1);
+  const cartItemCount = useHookstate(globalCartItemCount);
 
   const fetchProduct = async () => {
     a.get('/products/' + slug).then((res) => {
@@ -95,7 +99,32 @@ const ProductPage = (props: Props) => {
     });
   };
 
-  console.log(product);
+  const handleAddToBag = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    const productId = product?.id;
+    const userId = localStorage.getItem('currentUserId');
+
+    try {
+      const response = await a.post('/cart', {
+        productId,
+        userId,
+        quantity: 1,
+      });
+      if (response.data.id) {
+        cartItemCount.set(cartItemCount.value + 1);
+        notify({
+          title: 'Success',
+          description: `Added product ${product?.title} to cart!`,
+        });
+      } else {
+        error('Something went wrong');
+      }
+    } catch (err) {
+      error('Something went wrong');
+    }
+  };
 
   return (
     product && (
@@ -243,7 +272,7 @@ const ProductPage = (props: Props) => {
                 <form>
                   <div className='mt-10'>
                     <button
-                      type='submit'
+                      onClick={handleAddToBag}
                       className='flex items-center justify-center w-full px-8 py-3 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50'
                     >
                       Add to bag

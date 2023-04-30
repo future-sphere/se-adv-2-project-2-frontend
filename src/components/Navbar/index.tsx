@@ -8,11 +8,13 @@ import {
   ShoppingBagIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { classNames } from '../../helpers';
 import { Link, useNavigate } from 'react-router-dom';
-import { Category } from '../../interfaces';
+import { Cart, Category } from '../../interfaces';
 import a from '../../services';
+import { useHookstate } from '@hookstate/core';
+import { globalCartItemCount } from '../../states';
+import { AxiosResponse } from 'axios';
 
 type Props = {
   categories: Category[];
@@ -104,12 +106,20 @@ const Navbar = ({ categories }: Props) => {
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = React.useState<number>(0);
   const navigate = useNavigate();
-  const [cart, setCart] = React.useState<any>(null);
+  const [cart, setCart] = React.useState<Cart | null>(null);
+  const cartItemCount = useHookstate(globalCartItemCount);
 
   const getCart = async () => {
-    const cart = await a.get(`/cart/${userId}/student`);
-    if (cart.data) {
-      setCart(cart.data);
+    const response: AxiosResponse = await a.get(`/cart/${userId}/student`);
+    if (response.data) {
+      const cartData: Cart = response.data;
+      setCart(cartData);
+      cartItemCount.set(
+        cartData.cartItems.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.quantity,
+          0
+        )
+      );
     }
   };
 
@@ -137,8 +147,6 @@ const Navbar = ({ categories }: Props) => {
       }
     }
   };
-
-  console.log(cart);
 
   useEffect(() => {
     checkAuth();
@@ -308,7 +316,7 @@ const Navbar = ({ categories }: Props) => {
         </Dialog>
       </Transition.Root>
 
-      <header className='relative'>
+      <header>
         <nav aria-label='Top'>
           {/* Top navigation */}
           <div className='bg-gray-900'>
@@ -544,9 +552,8 @@ const Navbar = ({ categories }: Props) => {
                           aria-hidden='true'
                         />
                         <span className='ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800'>
-                          {cart ? cart.cartItems.length : 0}
+                          {cartItemCount.value}
                         </span>
-                        <span className='sr-only'>items in cart, view bag</span>
                       </a>
                     </div>
                   </div>

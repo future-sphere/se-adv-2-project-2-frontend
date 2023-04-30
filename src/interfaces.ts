@@ -14,6 +14,21 @@ export interface Product {
   highlightDescription: string;
 }
 
+export interface CartItem {
+  id: number;
+  cartId: number;
+  productId: Product['id'];
+  quantity: number;
+  product: Product;
+}
+
+export interface Cart {
+  createdAt: Date;
+  id: number;
+  studentId: number;
+  cartItems: CartItem[];
+}
+
 export interface Order {
   id: number;
   student: Student;
