@@ -546,7 +546,7 @@ const Navbar = ({ categories }: Props) => {
 
                     {/* Cart */}
                     <div className='flow-root ml-4 lg:ml-8'>
-                      <a href='#' className='flex items-center p-2 -m-2 group'>
+                      <Link to='/cart' className='flex items-center p-2 -m-2 group'>
                         <ShoppingBagIcon
                           className='flex-shrink-0 w-6 h-6 text-gray-400 group-hover:text-gray-500'
                           aria-hidden='true'
@@ -554,7 +554,7 @@ const Navbar = ({ categories }: Props) => {
                         <span className='ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800'>
                           {cartItemCount.value}
                         </span>
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
