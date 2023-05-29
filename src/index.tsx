@@ -16,6 +16,7 @@ import OrderDetailPage from './pages/Order';
 import { Notification } from '@bctc/components';
 import CartPage from './pages/Cart';
 import { CheckoutPage } from './pages/Checkout';
+import CheckoutSuccessPage from './pages/CheckoutSuccess';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -55,6 +56,10 @@ root.render(
             {
               index: true,
               element: <CheckoutPage />,
+            },
+            {
+              path: 'success',
+              element: <CheckoutSuccessPage />,
             },
           ],
         },

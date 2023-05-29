@@ -20,9 +20,16 @@ type Props = {
   subtotal: number;
   tax: number;
   currentUserId: string;
+  paymentIntentId: string;
 };
 
-const CheckoutForm = ({ cart, subtotal, tax, currentUserId }: Props) => {
+const CheckoutForm = ({
+  cart,
+  subtotal,
+  tax,
+  currentUserId,
+  paymentIntentId,
+}: Props) => {
   const [message, setMessage] = React.useState<string>('');
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const stripe = useStripe();
@@ -42,6 +49,7 @@ const CheckoutForm = ({ cart, subtotal, tax, currentUserId }: Props) => {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     if (!stripe || !elements) {
+      setMessage('An unexpected error occurred while initializing Stripe.');
       return;
     }
 
@@ -51,14 +59,22 @@ const CheckoutForm = ({ cart, subtotal, tax, currentUserId }: Props) => {
       !address.state ||
       !address.postalCode
     ) {
-      setMessage('Please fill out all fields.');
+      const emptyAddressFields = Object.keys(address).filter(
+        (key) => !address[key as keyof typeof address]
+      );
+      setMessage(
+        `Please enter a value for ${
+          emptyAddressFields &&
+          emptyAddressFields.map((field) => capitalize(field)).join(', ')
+        }.`
+      );
       return;
     }
 
     setIsLoading(true);
 
-    const response = await a.post('/order', {
-      shippingAddressStreet: address,
+    const response = await a.post('/orders', {
+      shippingAddressStreet: address.street,
       shippingAddressCity: address.city,
       shippingAddressState: address.state,
       shippingAddressPostalCode: address.postalCode,
@@ -66,7 +82,10 @@ const CheckoutForm = ({ cart, subtotal, tax, currentUserId }: Props) => {
       subtotal,
       tax,
       studentId: currentUserId,
+      paymentIntentId,
     });
+
+    console.log(response.data);
 
     const { error } = await stripe.confirmPayment({
       elements,
@@ -90,6 +109,7 @@ const CheckoutForm = ({ cart, subtotal, tax, currentUserId }: Props) => {
       <div className='mt-6'>
         <PaymentElement id='payment-element' />
       </div>
+      {message && <p className='mt-2 text-sm text-red-600'>{message}</p>}
       <div className='mt-10'>
         <h3 className='text-lg font-medium text-gray-900'>Shipping address</h3>
 
@@ -150,8 +170,15 @@ const CheckoutForm = ({ cart, subtotal, tax, currentUserId }: Props) => {
                 id='location'
                 name='location'
                 className='block w-full py-1.5 pl-3 pr-10 text-gray-900 border-0 rounded-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                defaultValue='Canada'
+                defaultValue=''
+                onChange={(e) => {
+                  setAddress({ ...address, state: e.target.value });
+                }}
+                value={address.state}
               >
+                <option value='' disabled>
+                  Select a state
+                </option>
                 {states.map((state) => (
                   <option key={state.name} value={state.abbreviation}>
                     {capitalize(state.name)}

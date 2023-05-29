@@ -15,6 +15,9 @@ export const CheckoutPage = () => {
   const currentUserId = localStorage.getItem('currentUserId');
   const [cart, setCart] = React.useState<Cart | null>(null);
   const [clientSecret, setClientSecret] = React.useState<string | null>(null);
+  const [paymentIntentId, setPaymentIntentId] = React.useState<string | null>(
+    null
+  );
 
   const getCart = async () => {
     const response: AxiosResponse = await a.get(
@@ -42,6 +45,7 @@ export const CheckoutPage = () => {
 
     if (response.data) {
       setClientSecret(response.data.client_secret);
+      setPaymentIntentId(response.data.id);
     }
   };
 
@@ -156,6 +160,7 @@ export const CheckoutPage = () => {
                       subtotal={subtotal || 0}
                       tax={tax}
                       cart={cart!}
+                      paymentIntentId={paymentIntentId!}
                     />
                   </Elements>
                 )}
