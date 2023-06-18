@@ -95,9 +95,11 @@ const ProfilePage = (props: Props) => {
                         </dt>
                         <dd className='mt-1 font-medium text-gray-900'>
                           {formatPrice(
-                            order.products.reduce((acc, product) => {
-                              return acc + product.price;
-                            }, 0)
+                            order.cart.cartItems.reduce((acc, cartItem) => {
+                              return (
+                                acc + cartItem.product.price * cartItem.quantity
+                              );
+                            }, 0),
                           )}
                         </dd>
                       </div>
@@ -138,7 +140,7 @@ const ProfilePage = (props: Props) => {
                                     active
                                       ? 'bg-gray-100 text-gray-900'
                                       : 'text-gray-700',
-                                    'block px-4 py-2 text-sm'
+                                    'block px-4 py-2 text-sm',
                                   )}
                                 >
                                   View
@@ -163,25 +165,25 @@ const ProfilePage = (props: Props) => {
                   {/* Products */}
                   <h4 className='sr-only'>Items</h4>
                   <ul role='list' className='divide-y divide-gray-200'>
-                    {order.products.map((product) => (
-                      <li key={product.id} className='p-4 sm:p-6'>
+                    {order.cart.cartItems.map((cartItem) => (
+                      <li key={cartItem.id} className='p-4 sm:p-6'>
                         <div className='flex items-center sm:items-start'>
                           <div className='flex-shrink-0 w-20 h-20 overflow-hidden bg-gray-200 rounded-lg sm:h-40 sm:w-40'>
                             <img
-                              src={product.thumbnailImage}
-                              alt={product.title}
+                              src={cartItem.product.thumbnailImage}
+                              alt={cartItem.product.title}
                               className='object-cover object-center w-full h-full'
                             />
                           </div>
                           <div className='flex-1 ml-6 text-sm'>
                             <div className='font-medium text-gray-900 sm:flex sm:justify-between'>
-                              <h5>{product.title}</h5>
+                              <h5>{cartItem.product.title}</h5>
                               <p className='mt-2 sm:mt-0'>
-                                {formatPrice(product.price)}
+                                {formatPrice(cartItem.product.price)}
                               </p>
                             </div>
                             <p className='hidden text-gray-500 sm:mt-2 sm:block'>
-                              {product.description}
+                              {cartItem.product.description}
                             </p>
                           </div>
                         </div>
@@ -205,7 +207,7 @@ const ProfilePage = (props: Props) => {
                           <div className='flex items-center pt-4 mt-6 space-x-4 text-sm font-medium border-t border-gray-200 divide-x divide-gray-200 sm:mt-0 sm:ml-4 sm:border-none sm:pt-0'>
                             <div className='flex justify-center flex-1'>
                               <Link
-                                to={`/product/${product.slug}`}
+                                to={`/product/${cartItem.product.slug}`}
                                 className='text-indigo-600 whitespace-nowrap hover:text-indigo-500'
                               >
                                 View product

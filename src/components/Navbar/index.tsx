@@ -117,8 +117,8 @@ const Navbar = ({ categories }: Props) => {
       cartItemCount.set(
         cartData.cartItems.reduce(
           (accumulator, currentValue) => accumulator + currentValue.quantity,
-          0
-        )
+          0,
+        ),
       );
     }
   };
@@ -157,8 +157,6 @@ const Navbar = ({ categories }: Props) => {
       getCart();
     }
   }, [userId]);
-
-  console.log(userId, 'user is logged in');
 
   return (
     <>
@@ -210,7 +208,7 @@ const Navbar = ({ categories }: Props) => {
                               selected
                                 ? 'text-indigo-600 border-indigo-600'
                                 : 'text-gray-900 border-transparent',
-                              'flex-1 whitespace-nowrap border-b-2 py-4 px-1 text-base font-medium'
+                              'flex-1 whitespace-nowrap border-b-2 py-4 px-1 text-base font-medium',
                             )
                           }
                         >
@@ -385,14 +383,14 @@ const Navbar = ({ categories }: Props) => {
                                     open
                                       ? 'text-indigo-600'
                                       : 'text-gray-700 hover:text-gray-800',
-                                    'relative flex items-center justify-center text-sm font-medium transition-colors duration-200 ease-out'
+                                    'relative flex items-center justify-center text-sm font-medium transition-colors duration-200 ease-out',
                                   )}
                                 >
                                   {category.name}
                                   <span
                                     className={classNames(
                                       open ? 'bg-indigo-600' : '',
-                                      'absolute inset-x-0 -bottom-px z-20 h-0.5 transition duration-200 ease-out'
+                                      'absolute inset-x-0 -bottom-px z-20 h-0.5 transition duration-200 ease-out',
                                     )}
                                     aria-hidden='true'
                                   />
@@ -422,7 +420,7 @@ const Navbar = ({ categories }: Props) => {
                                     <div
                                       className={classNames(
                                         open ? 'bg-gray-200' : 'bg-transparent',
-                                        'h-px w-full transition-colors duration-200 ease-out'
+                                        'h-px w-full transition-colors duration-200 ease-out',
                                       )}
                                     />
                                   </div>
@@ -546,7 +544,10 @@ const Navbar = ({ categories }: Props) => {
 
                     {/* Cart */}
                     <div className='flow-root ml-4 lg:ml-8'>
-                      <Link to='/cart' className='flex items-center p-2 -m-2 group'>
+                      <Link
+                        to='/cart'
+                        className='flex items-center p-2 -m-2 group'
+                      >
                         <ShoppingBagIcon
                           className='flex-shrink-0 w-6 h-6 text-gray-400 group-hover:text-gray-500'
                           aria-hidden='true'

@@ -83,7 +83,6 @@ const ProductPage = (props: Props) => {
       rating: selectedRating,
       comment: review,
     }).then((res) => {
-      console.log(res.data);
       setReviewModalOpen(false);
       setReview('');
       fetchProduct();
@@ -100,7 +99,7 @@ const ProductPage = (props: Props) => {
   };
 
   const handleAddToBag = async (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
     const productId = product?.id;
@@ -216,7 +215,7 @@ const ProductPage = (props: Props) => {
                                   ? 'text-yellow-400'
                                   : 'text-gray-200',
 
-                                'h-5 w-5 flex-shrink-0'
+                                'h-5 w-5 flex-shrink-0',
                               )}
                               aria-hidden='true'
                             />
@@ -375,7 +374,7 @@ const ProductPage = (props: Props) => {
                           averageReviewRating > rating
                             ? 'text-yellow-400'
                             : 'text-gray-300',
-                          'flex-shrink-0 h-5 w-5'
+                          'flex-shrink-0 h-5 w-5',
                         )}
                         aria-hidden='true'
                       />
@@ -396,7 +395,7 @@ const ProductPage = (props: Props) => {
                 <dl className='space-y-3'>
                   {[5, 4, 3, 2, 1].map((count) => {
                     const numberOfReviewsMatched = product.reviews.filter(
-                      (review) => review.rating === count
+                      (review) => review.rating === count,
                     ).length;
                     return (
                       <div key={count} className='flex items-center text-sm'>
@@ -414,7 +413,7 @@ const ProductPage = (props: Props) => {
                                 numberOfReviewsMatched > 0
                                   ? 'text-yellow-400'
                                   : 'text-gray-300',
-                                'flex-shrink-0 h-5 w-5'
+                                'flex-shrink-0 h-5 w-5',
                               )}
                               aria-hidden='true'
                             />
@@ -435,7 +434,7 @@ const ProductPage = (props: Props) => {
                         <dd className='w-10 ml-3 text-sm text-right text-gray-900 tabular-nums'>
                           {Math.round(
                             (numberOfReviewsMatched / product.reviews.length) *
-                              100
+                              100,
                           )}
                           %
                         </dd>
@@ -492,7 +491,7 @@ const ProductPage = (props: Props) => {
                                   review.rating > rating
                                     ? 'text-yellow-400'
                                     : 'text-gray-300',
-                                  'h-5 w-5 flex-shrink-0'
+                                  'h-5 w-5 flex-shrink-0',
                                 )}
                                 aria-hidden='true'
                               />
@@ -583,7 +582,7 @@ const ProductPage = (props: Props) => {
                                         'w-8 h-8',
                                         selectedRating >= rating
                                           ? 'text-yellow-400'
-                                          : 'text-gray-300'
+                                          : 'text-gray-300',
                                       )}
                                     />
                                   </RadioGroup.Option>

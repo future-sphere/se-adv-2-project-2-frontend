@@ -1,32 +1,12 @@
-import queryString from 'query-string';
-import React, { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import a from '../../services';
-import { Order } from '../../interfaces';
+import { Link } from 'react-router-dom';
 
-type Props = {};
-
-const CheckoutSuccessPage = (props: Props) => {
-  const location = useLocation();
-  const paymentIntentId = queryString.parse(location.search).payment_intent;
-  const [order, setOrder] = React.useState<Order | null>(null);
-
-  useEffect(() => {
-    const fetchOrder = async () => {
-      const response = await a.get(`/orders/paymentIntent/${paymentIntentId}`);
-      setOrder(response.data);
-    };
-
-    if (paymentIntentId) {
-      fetchOrder();
-    }
-  }, [paymentIntentId]);
-  console.log(order);
-
+const CheckoutSuccessPage = () => {
   return (
     <main className='grid min-h-full px-6 py-24 bg-white place-items-center sm:py-32 lg:px-8'>
       <div className='text-center'>
-        <p className='text-base font-semibold text-indigo-600'>404</p>
+        <p className='text-base font-semibold text-indigo-600'>
+          Congratulations!
+        </p>
         <h1 className='mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl'>
           Success
         </h1>
@@ -40,8 +20,8 @@ const CheckoutSuccessPage = (props: Props) => {
           >
             Go back home
           </Link>
-          <Link to={`/order/1`} className='text-sm font-semibold text-gray-900'>
-            View Order <span aria-hidden='true'>&rarr;</span>
+          <Link to={`/profile`} className='text-sm font-semibold text-gray-900'>
+            View Orders <span aria-hidden='true'>&rarr;</span>
           </Link>
         </div>
       </div>

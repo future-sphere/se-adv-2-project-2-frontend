@@ -90,7 +90,7 @@ const SubCategoryPage = (props: Props) => {
   const location = useLocation();
   const slug = location.pathname.split('/')[2];
   const [subcategory, setSubcategory] = React.useState<SubCategory | null>(
-    null
+    null,
   );
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = React.useState(false);
@@ -107,12 +107,10 @@ const SubCategoryPage = (props: Props) => {
     setSorting(nextSorting);
   };
 
-  console.log(sorting);
-
   const handlePriceFilterChange = (
     filterSection: string,
     filterValue: Range,
-    checked: boolean
+    checked: boolean,
   ) => {
     if (filterSection === 'price') {
       if (checked) {
@@ -120,7 +118,7 @@ const SubCategoryPage = (props: Props) => {
       } else {
         const nextPriceFilters = priceFilters.filter(
           (filter) =>
-            filter.min !== filterValue.min && filter.max !== filterValue.max
+            filter.min !== filterValue.min && filter.max !== filterValue.max,
         );
         setPriceFilters(nextPriceFilters);
       }
@@ -208,7 +206,7 @@ const SubCategoryPage = (props: Props) => {
                                 <ChevronDownIcon
                                   className={classNames(
                                     open ? '-rotate-180' : 'rotate-0',
-                                    'h-5 w-5 transform'
+                                    'h-5 w-5 transform',
                                   )}
                                   aria-hidden='true'
                                 />
@@ -395,7 +393,7 @@ const SubCategoryPage = (props: Props) => {
                                   handlePriceFilterChange(
                                     section.id,
                                     option.value as Range,
-                                    e.target.checked
+                                    e.target.checked,
                                   );
                                 }
                               }}

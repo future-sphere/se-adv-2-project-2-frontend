@@ -5,7 +5,7 @@ import a from './services';
 function App() {
   useEffect(() => {
     a.get('/health').then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
     });
   }, []);
 

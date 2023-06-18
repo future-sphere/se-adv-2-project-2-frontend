@@ -60,13 +60,13 @@ const CheckoutForm = ({
       !address.postalCode
     ) {
       const emptyAddressFields = Object.keys(address).filter(
-        (key) => !address[key as keyof typeof address]
+        (key) => !address[key as keyof typeof address],
       );
       setMessage(
         `Please enter a value for ${
           emptyAddressFields &&
           emptyAddressFields.map((field) => capitalize(field)).join(', ')
-        }.`
+        }.`,
       );
       return;
     }
@@ -80,12 +80,10 @@ const CheckoutForm = ({
       shippingAddressPostalCode: address.postalCode,
       cartId: cart.id,
       subtotal,
-      tax,
+      tax: Math.round(tax),
       studentId: currentUserId,
       paymentIntentId,
     });
-
-    console.log(response.data);
 
     const { error } = await stripe.confirmPayment({
       elements,

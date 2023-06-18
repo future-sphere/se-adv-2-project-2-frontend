@@ -16,29 +16,35 @@ export const CheckoutPage = () => {
   const [cart, setCart] = React.useState<Cart | null>(null);
   const [clientSecret, setClientSecret] = React.useState<string | null>(null);
   const [paymentIntentId, setPaymentIntentId] = React.useState<string | null>(
-    null
+    null,
   );
+  const [orderTotal, setOrderTotal] = React.useState<number>(0);
+  const [tax, setTax] = React.useState<number>(0);
+  const [subtotal, setSubtotal] = React.useState<number>(0);
 
   const getCart = async () => {
     const response: AxiosResponse = await a.get(
-      `/cart/${currentUserId}/student`
+      `/cart/${currentUserId}/student`,
     );
     if (response.data) {
       const cartData: Cart = response.data;
       setCart(cartData);
+
+      const amount = cartData.cartItems.reduce(
+        (acc, cartItem) => acc + cartItem.product.price * cartItem.quantity,
+        0,
+      );
+      setSubtotal(amount);
+      setTax(amount * 0.0875);
+      setOrderTotal(amount + amount * 0.0875);
+      if (!clientSecret && !paymentIntentId) {
+        getPaymentIntent(amount + amount * 0.0875);
+      }
     }
   };
 
-  const subtotal = cart?.cartItems.reduce(
-    (acc, cartItem) => acc + cartItem.product.price * cartItem.quantity,
-    0
-  );
-
-  const tax = subtotal ? subtotal * 0.0875 : 0;
-
-  const orderTotal = subtotal ? subtotal + tax : 0;
-
-  const getPaymentIntent = async () => {
+  const getPaymentIntent = async (orderTotal: number) => {
+    console.log('payment intent getting');
     const response: AxiosResponse = await a.post('/payment/intent', {
       amount: orderTotal,
     });
@@ -50,16 +56,11 @@ export const CheckoutPage = () => {
   };
 
   useEffect(() => {
+    console.log('calling useEffect on page load');
     if (currentUserId) {
       getCart();
     }
   }, [currentUserId]);
-
-  useEffect(() => {
-    if (orderTotal) {
-      getPaymentIntent();
-    }
-  }, [orderTotal, cart]);
 
   return (
     <div className='bg-white'>

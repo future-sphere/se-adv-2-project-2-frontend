@@ -33,8 +33,26 @@ export interface Order {
   id: number;
   student: Student;
   studentId: number;
-  products: Product[];
   createdAt: Date;
+  cart: Cart;
+  shippingAddress: ShippingAddress;
+  paymentMethod: PaymentMethod;
+}
+
+export interface PaymentMethod {
+  card: {
+    last4: string;
+    brand: string;
+    funding: string;
+  };
+}
+
+export interface ShippingAddress {
+  id: string;
+  streetAddress: String;
+  city: String;
+  state: String;
+  zipCode: String;
 }
 
 export interface ProductHighlight {
